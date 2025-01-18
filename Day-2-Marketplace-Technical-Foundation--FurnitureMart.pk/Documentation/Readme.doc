@@ -1,0 +1,49 @@
+FurnitureMart.pk Marketplace Project - README
+
+Project Overview
+
+This project is a hybrid furniture marketplace that connects local furniture sellers and customers, allowing users to browse, customize, and purchase furniture online while still providing the option to visit showrooms for a physical experience. The marketplace uses modern technologies to ensure a seamless and efficient user experience.
+
+What is the Purpose
+
+In My Area there is many Furniture showrooms and workshops, infact it is one of largest Furniture Market In Asia, so i thought this idea, In my knowledge there is no Separate Marketplace for Furniture in Pakistan, Most of the Sellers don't have any online presence, and some of the sellers are working online but don't have a showroom, so the user can visit them, but in our Case we have Both.
+
+Also customer find it inconvenient to visit multiple showrooms to buy the right Furniture at good price, Also the seller lack growth because of high competition in the offline Market, So online selling is the best approach to reach new customers.
+
+Key Features
+
+ - Hybrid shopping experience: Browse online and confirm orders in showrooms.
+
+ - User dashboard for managing orders and tracking shipments.
+
+ - Secure payments using Stripe API.
+
+ - Real-time shipment tracking using ShipEngine API.
+
+
+Technology Stack
+
+ - Frontend: Next.js (App Router), TypeScript, Tailwind CSS.
+
+ - Backend: Next.js API routes and Sanity CMS.
+
+ - Database: Sanity CMS for managing products, cart, orders, reviews, and user data.
+
+
+Third-Party APIs:
+
+ - Stripe API: For payment processing.
+
+ - ShipEngine API: For real-time shipment tracking.
+
+
+Future Enhancements
+
+ - Implement an Augmented Reality (AR) feature for customers to visualize furniture in their homes.
+
+ - Add advanced filtering options for product browsing (e.g., by material, size).
+
+ - Enable email or SMS notifications for order updates and shipment tracking.
+
+ - Provide analytics for sellers to track their sales and product performance.
+
