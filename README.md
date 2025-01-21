@@ -47,6 +47,58 @@ FurnitureMart.pk is a dynamic chair marketplace developed during a 7-day hackath
 - **Outcome**: Successfully deployed project with environment variables securely configured.
 
 ---
+
+## **Folder Structure**
+```
+FurnitureMart.pk/
+├── app/                  # Main application directory
+│   ├── about/            # About page
+│   ├── api/              # API routes
+│   ├── cart/             # Cart functionality
+│   ├── checkout/         # Checkout process
+│   ├── contact/          # Contact page
+│   ├── context/          # Context API for state management
+│   ├── faq/              # Frequently Asked Questions page
+│   ├── product/          # Single product details page
+│   ├── products/         # Product listing page
+│   ├── studio/           # Sanity Studio configuration
+│   ├── favicon.ico       # Website favicon
+│   ├── fonts.tsx         # Font management
+│   ├── globals.css       # Global styles
+│   ├── layout.tsx        # Root layout component
+│   └── page.tsx          # Main entry point
+├── components/           # Reusable UI components
+│   ├── sections/         # Page sections
+│   │   ├── Categories.tsx         # Categories section
+│   │   ├── Checkout.tsx           # Checkout section
+│   │   ├── Clients.tsx            # Clients section
+│   │   ├── FeaturedProducts.tsx   # Featured products section
+│   │   ├── Footer.tsx             # Footer component
+│   │   ├── Gallery.tsx            # Gallery section
+│   │   ├── Header.tsx             # Header component
+│   │   ├── Hero.tsx               # Hero section
+│   │   ├── Products.tsx           # Products section
+│   │   ├── ProductsWrapper.tsx    # Client Wrapper for products listing
+│   │   └── SingleProduct.tsx      # Single product display
+│   ├── ui/              # UI-specific reusable components
+│       ├── CategoryFilter.tsx     # Category filtering UI
+│       ├── Drawer.tsx             # Drawer component
+│       ├── FilterPanel.tsx        # Filtering panel
+│       ├── Pagination.tsx         # Pagination component
+│       ├── PaymentForm.tsx        # Payment form UI
+│       ├── ProductCard.tsx        # Product card display
+│       ├── RelatedProducts.tsx    # Related products UI
+│       ├── SearchBar.tsx          # Search bar component
+│       ├── SocialSharing.tsx      # Social media sharing UI
+│       └── Toast.tsx              # Toast notifications
+├── lib/                  # Helper libraries and utilities
+├── notes/                # Notes or additional documentation
+├── Public/               # Static assets (images, etc.)
+├── sanity/               # Sanity configuration and schemas
+├── scripts/              # Custom scripts (migration, cleanup, etc)
+└── utils/                # Utility functions
+
+````
 ### **Tech Stack**
 Frontend: Next.js, TypeScript, Tailwind CSS
 Backend: Sanity CMS
