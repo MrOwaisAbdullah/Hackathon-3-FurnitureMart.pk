@@ -28,7 +28,7 @@ FurnitureMart.pk is a dynamic chair marketplace developed during a 7-day hackath
 
 ### **Day 3: Data Migration and API Integration**
 - Imported product and category data from external APIs into Sanity CMS.
-- Created a migration script using `dotenv` and `@sanity/client`.
+- Created a migration script to import data from api to sanity.
 - **Outcome**: Successfully populated Sanity CMS with data and integrated APIs.
 
 ### **Day 4: Dynamic Frontend Development**
