@@ -1,0 +1,37 @@
+Test Case ID,Test Case Description,Test Steps,Expected Result,Actual Result,Status,Severity Level,Assigned To,Remarks
+TC-01,Verify homepage loads successfully,"1. Open the app. 
+ 2. Navigate to the homepage.","Homepage is displayed with all components (header, footer, etc.)",Homepage is loading successfully,Passed,Low,N/A,
+TC-02,Check navigation links in the header,"1. Click on each navigation link (e.g., Home, Products, Cart). 
+ 2. Verify navigation works.",Navigation links lead to the correct pages,Navigation links are working correctly,Passed,Low,N/A,
+TC-03,Verify product listing page loads,"1. Navigate to the product listing page. 
+ 2. Check if all products are displayed.",Products are displayed with correct details,Product listing page is loading successfully,Passed,Medium,N/A,
+TC-04,Test search functionality,"1. Enter a query in the search bar. 
+ 2. Verify search results match the query.",Products matching the search query are displayed,Search functionality is working as expected,Passed,Medium,N/A,
+TC-05,Test category filtering on product page,"1. Select a category filter. 
+ 2. Verify products displayed match the selected category.",Products are filtered based on selected categories,Category filter is working correctly,Passed,Medium,N/A,
+TC-06,Verify pagination on product listing page,"1. Click on ""Next"" or ""Previous"" buttons. 
+ 2. Verify the products displayed change accordingly.",Products are paginated correctly,Pagination is working correctly,Passed,Low,N/A,
+TC-07,Add a product to the cart,"1. Click ""Add to Cart"" on a product. 
+ 2. Verify the cart displays the selected product.",Selected product appears in the cart with correct details,Add to cart is working as expected,Passed,Medium,N/A,
+TC-08,Remove a product from the cart,"1. Click ""Remove"" on a product in the cart. 
+ 2. Verify the product is removed and total updates.",Product is removed from the cart and total price updates,Remove from cart is working correctly,Passed,Medium,N/A,
+TC-09,Test empty cart state,"1. Clear the cart. 
+ 2. Verify the message ""Your cart is empty"" is displayed.","""Your cart is empty"" message is displayed",Empty cart message is displaying properly,Passed,Low,N/A,
+TC-10,Verify checkout page functionality,"1. Proceed to checkout from the cart. 
+ 2. Verify order summary is displayed.",User can proceed to checkout and see order summary,Checkout page is working correctly,Passed,Medium,N/A,
+TC-11,Validate social sharing on product details,"1. Click on social sharing buttons. 
+ 2. Verify shared content includes product name and link.",Social sharing generates correct URLs,Only Twitter is generating the correct message and URL,Partially Passed,Low,N/A,Other platforms not posting correctly
+TC-12,Test toast notifications,"1. Perform actions like ""Add to Cart."" 
+ 2. Verify the toast notification appears.",Notifications are displayed properly,Toast notifications are working as expected,Passed,Low,N/A,
+TC-13,Test API error handling on product listing,"1. Disconnect internet or mock API failure. 
+ 2. Verify error message is displayed.",Error message is shown when the product API fails,"""Products not found"" message is displayed correctly",Passed,Medium,N/A,
+TC-14,Verify related products on product page,"1. Open a product detail page. 
+ 2. Check if related products are displayed.",Related products are displayed based on category or tags,Related products are displayed correctly,Passed,Medium,N/A,
+TC-15,Check cart persistence,"1. Add products to the cart. 
+ 2. Reload the page.",Cart items persist after page reload,Cart items are persisting because of local storage,Passed,Medium,N/A,
+TC-16,Test order placement,"1. Proceed to place an order. 
+ 2. Verify order details are saved.",Order details are saved and confirmation is displayed,Order is not saved but redirects successfully to confirmation,Partially Passed,High,N/A,Order saving functionality not written
+TC-17,Test empty product listing,"1. Mock an empty API response. 
+ 2. Verify ""No products available"" message is shown.","""No products available"" message is displayed for empty API response","Empty API response shows ""Products not found"" message",Passed,Medium,N/A,
+TC-18,Validate responsiveness on mobile devices,"1. Test the app on mobile viewports. 
+ 2. Verify UI is usable.",UI components are responsive and usable on smaller screens,UI is responsive on mobile devices,Passed,Medium,N/A,
