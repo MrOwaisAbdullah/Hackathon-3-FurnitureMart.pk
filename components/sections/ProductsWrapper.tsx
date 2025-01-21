@@ -6,6 +6,11 @@ import ProductCard from "@/components/ui/ProductCard";
 import FilterPanel from "@/components/ui/FilterPanel";
 import Pagination from "@/components/ui/Pagination";
 import { ProductCards } from "@/typing";
+import { Drawer, DrawerContent } from "../ui/drawer";
+import { IoFilterOutline } from "react-icons/io5";
+import { CiFilter } from "react-icons/ci";
+import { FaFilter } from "react-icons/fa";
+import { IoMdOptions } from "react-icons/io";
 
 interface ProductsClientWrapperProps {
   categories: string[];
@@ -22,37 +27,54 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
   const router = useRouter();
   const pathname = usePathname();
 
+  // State to manage the open/close status of the drawer
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Function to toggle the drawer's open/close state
+  const toggleDrawer = () => setIsOpen((prev) => !prev);
+  // Function to explicitly close the drawer
+  const closeDrawer = () => setIsOpen(false);
+
   // Get initial values from URL
   const initialPage = Number(searchParams.get("page")) || 1;
   const pageSize = 6;
 
   // States
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const [filteredProducts, setFilteredProducts] = useState<ProductCards[]>(products);
+  const [filteredProducts, setFilteredProducts] =
+    useState<ProductCards[]>(products);
   const [filters, setFilters] = useState({
     query: searchParams.get("query") || "",
     minPrice: Number(searchParams.get("minPrice")) || 0,
     maxPrice: Number(searchParams.get("maxPrice")) || Infinity,
     sellers: searchParams.get("sellers")?.split(",").filter(Boolean) || [],
-    categories: searchParams.get("categories")?.split(",").filter(Boolean) || [],
+    categories:
+      searchParams.get("categories")?.split(",").filter(Boolean) || [],
     inStockOnly: searchParams.get("inStockOnly") === "true",
   });
 
   // Update URL without causing a page reset
-  const updateURL = useCallback((newFilters: typeof filters, page: number) => {
-    const params = new URLSearchParams();
-    
-    if (newFilters.query) params.set("query", newFilters.query);
-    if (newFilters.minPrice > 0) params.set("minPrice", newFilters.minPrice.toString());
-    if (newFilters.maxPrice < Infinity) params.set("maxPrice", newFilters.maxPrice.toString());
-    if (newFilters.sellers.length) params.set("sellers", newFilters.sellers.join(","));
-    if (newFilters.categories.length) params.set("categories", newFilters.categories.join(","));
-    if (newFilters.inStockOnly) params.set("inStockOnly", "true");
-    
-    params.set("page", page.toString());
+  const updateURL = useCallback(
+    (newFilters: typeof filters, page: number) => {
+      const params = new URLSearchParams();
 
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  }, [pathname, router]);
+      if (newFilters.query) params.set("query", newFilters.query);
+      if (newFilters.minPrice > 0)
+        params.set("minPrice", newFilters.minPrice.toString());
+      if (newFilters.maxPrice < Infinity)
+        params.set("maxPrice", newFilters.maxPrice.toString());
+      if (newFilters.sellers.length)
+        params.set("sellers", newFilters.sellers.join(","));
+      if (newFilters.categories.length)
+        params.set("categories", newFilters.categories.join(","));
+      if (newFilters.inStockOnly) params.set("inStockOnly", "true");
+
+      params.set("page", page.toString());
+
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [pathname, router]
+  );
 
   // Apply filters
   const applyFilters = useCallback(() => {
@@ -67,7 +89,8 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
         (product.seller && filters.sellers.includes(product.seller._id));
       const matchesCategories =
         filters.categories.length === 0 ||
-        (product.category && filters.categories.includes(product.category.title));
+        (product.category &&
+          filters.categories.includes(product.category.title));
       const matchesStock = !filters.inStockOnly || product.inventory > 0;
 
       return (
@@ -106,24 +129,43 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
     updateURL(updatedFilters, 1); // Reset to page 1 when filters change
   };
 
-    // If products are empty or not fetched, show "Products Not Found"
-    if (!products || products.length === 0) {
-      return (
-        <div className="flex justify-center items-center h-[50vh]">
-          <p className="text-2xl font-bold text-gray-500">Products Not Found!!!</p>
-        </div>
-      );
-    }
+  // If products are empty or not fetched, show "Products Not Found"
+  if (!products || products.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-[50vh]">
+        <p className="text-2xl font-bold text-gray-500">
+          Products Not Found!!!
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-col-1 md:grid-col-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
       <div className="col-span-1 mt-2">
-        <FilterPanel
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          sellers={sellers}
-          categories={categories}
-        />
+        <Drawer direction="bottom" open={isOpen} onOpenChange={setIsOpen}>
+          {/* Button to Toggle Drawer */}
+          <button onClick={toggleDrawer} className="text-3xl md:hidden">
+            <span className="flex items-center text-2xl font-medium gap-1">Filters<IoMdOptions/>
+            </span>
+          </button>
+          <DrawerContent className="bg-background mx-auto text-left p-6 w-full">
+            <FilterPanel
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              sellers={sellers}
+              categories={categories}
+            />
+          </DrawerContent>
+        </Drawer>
+        <span className="hidden md:block p-4 bg-white shadow-md rounded-lg">
+          <FilterPanel
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            sellers={sellers}
+            categories={categories}
+          />
+        </span>
       </div>
       <div className="sm:col-start-2 lg:col-span-2 xl:col-span-3">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-2 gap-5">
@@ -132,10 +174,7 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
           ))}
         </div>
         {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-          />
+          <Pagination currentPage={currentPage} totalPages={totalPages} />
         )}
       </div>
     </div>

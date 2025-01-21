@@ -5,6 +5,7 @@ import Footer from "@/components/sections/Footer";
 import { CartProvider } from "./context/CartContext";
 import { NotificationsProvider } from "./context/NotificationContext";
 import { ToastContainer } from "@/components/ui/Toast";
+import { WishlistProvider } from "./context/WishlistContext";
 
 export const metadata: Metadata = {
   title: "Comforty Furniture Shop",
@@ -20,12 +21,14 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <CartProvider>
+        <WishlistProvider>
           <NotificationsProvider>
             <Header />
             {children}
             <ToastContainer />
             <Footer />
           </NotificationsProvider>
+          </WishlistProvider>
         </CartProvider>
       </body>
     </html>

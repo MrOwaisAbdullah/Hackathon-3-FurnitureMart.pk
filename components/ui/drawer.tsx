@@ -64,7 +64,7 @@ const DrawerContent = React.forwardRef<
         {...props}
       >
         {(!direction || direction === "bottom") && (
-          <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
+          <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-gray-200" />
         )}
         {(direction === "top") && (
           <div className="mx-auto mb-4 h-2 w-[100px] rounded-full bg-muted" />

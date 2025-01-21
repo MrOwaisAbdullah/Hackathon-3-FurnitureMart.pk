@@ -8,6 +8,7 @@ import { urlFor } from "@/sanity/lib/image";
 import { Products } from "@/typing";
 import { useNotifications } from "@/app/context/NotificationContext"; // Import the notifications context
 import SocialSharing from "../ui/SocialSharing";
+import { WishlistButton } from "../ui/WishListButton";
 
 const SingleProduct = ({ product }: { product: Products }) => {
   const { dispatch } = useCart();
@@ -32,7 +33,7 @@ const SingleProduct = ({ product }: { product: Products }) => {
       dispatch({
         type: "ADD_TO_CART",
         product: {
-          _id: product._id,
+           _id: product._id,
           title: product.title,
           price: product.price,
           image: product.image ? urlFor(product.image).url() : null,
@@ -43,7 +44,7 @@ const SingleProduct = ({ product }: { product: Products }) => {
       // Trigger a success notification
       addNotification("Added to cart successfully!", "success");
       setQuantity(1); // Reset quantity after adding
-    } catch (error) {
+    }catch (error) {
       // Trigger an error notification
       addNotification("Failed to add to cart. Please try again.", "error");
       console.error(error);
@@ -81,6 +82,7 @@ const SingleProduct = ({ product }: { product: Products }) => {
           {product.description}
         </p>
         <div className="flex items-center gap-4 mb-3">
+        <div className="flex items-center gap-4 mb-3">
           <label htmlFor="quantity" className="text-sm font-medium">
             Quantity:
           </label>
@@ -92,6 +94,8 @@ const SingleProduct = ({ product }: { product: Products }) => {
             onChange={handleQuantityChange}
             className="border rounded px-3 py-1 w-20"
           />
+        </div>
+        <WishlistButton product={product} />
         </div>
         <button
           onClick={handleAddToCart}

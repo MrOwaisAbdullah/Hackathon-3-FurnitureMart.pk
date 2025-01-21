@@ -138,8 +138,8 @@ const Header = () => {
           </div>
           <Link href={"/cart"} 
           onClick={closeDrawer}>
-            <div className="group rounded-xl gap-3 flex items-center max-w-40 ">
-              <PiShoppingCart className="text-2xl group-hover:text-primary flex items-center justify-center" />
+            <div className="group mt-5 rounded-xl gap-3 flex items-center max-w-40 ">
+              <PiShoppingCart className="text-3xl group-hover:text-primary flex items-center justify-center" />
               <p className="group-hover:text-primary">Cart</p>
               <div className="rounded-full text-xs min-w-5 min-h-5 flex justify-center items-center text-center text-white bg-primary">
                 {cartCount}

@@ -9,7 +9,7 @@ interface Products {
   image: SanityImageSource | null;
   description?: string;
   slug?: {
-    current: string | null;
+    current: string;
   }
   quantity?: number; 
 }
@@ -92,4 +92,18 @@ interface Seller {
   address?: string;
   logo?: SanityImageSource;
   products?: { _ref: string }[]; // Array of product references
+}
+
+export interface WishlistAction {
+  type: 'ADD_TO_WISHLIST' | 'REMOVE_FROM_WISHLIST' | 'CLEAR_WISHLIST' | 'SET_WISHLIST';
+  product?: Products;  
+  id?: string;        
+}
+
+export interface WishlistItem {
+  _id: string;
+  title: string;
+  price: number;
+  image: string;
+  slug: { current: string };
 }

@@ -3,6 +3,7 @@ import React from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import hero from "../../Public/hero.png";
 import { inter } from "@/app/fonts";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -17,9 +18,11 @@ const Hero = () => {
             your interior.
           </p>
           <div className="flex justify-center">
+            <Link href="/products">
             <button className="inline-flex text-white bg-primary border-0 py-3 px-6 focus:outline-none hover:bg-accent items-center gap-4 rounded">
               Shop Now <FaArrowRightLong className="text-sm" />
             </button>
+            </Link>
           </div>
         </div>
         <div className="lg:w-2/5 md:w-1/2 w-5/6">

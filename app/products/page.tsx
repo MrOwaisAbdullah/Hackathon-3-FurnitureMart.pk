@@ -21,7 +21,7 @@ const Products = async () => {
       <h2 className="heading xl:px-28 text-center">Our Products</h2>
       {/* Wrap ProductsClientWrapper in Suspense */}
       <div className="mx-3">
-        <Suspense fallback={<div>Loading products...</div>}>
+        <Suspense fallback={<div className="flex justify-center items-center font-medium">Loading products...</div>}>
           <ProductsClientWrapper
             sellers={sellers}
             categories={categories}
@@ -49,22 +49,22 @@ const Products = async () => {
         </h3>
         {/* Product Gallery Images */}
         <div className="grid grid-cols-1 sm:grid-cols-[auto,auto] md:grid-cols-[auto,auto,auto] lg:grid-cols-[repeat(6,auto)] px-20 md:px-5 gap-5">
-          <div className="group relative rounded-xl h-96 sm:h-32 sm:w-36 bg-slate-200 overflow-hidden">
+          <div className="group relative rounded-xl h-64 sm:h-32 sm:w-36 bg-slate-200 overflow-hidden">
             <Image src={category} alt="product" />
           </div>
-          <div className="group relative rounded-xl h-96 sm:h-32 sm:w-36 bg-slate-200 overflow-hidden">
+          <div className="group relative rounded-xl h-64 sm:h-32 sm:w-36 bg-slate-200 overflow-hidden">
             <Image src={product2} alt="product" />
           </div>
-          <div className="group relative rounded-xl h-96 sm:h-32 sm:w-36 bg-slate-200 overflow-hidden">
+          <div className="group relative rounded-xl h-64 sm:h-32 sm:w-36 bg-slate-200 overflow-hidden">
             <Image src={product3} alt="product" />
           </div>
-          <div className="group relative rounded-xl h-96 sm:h-32 sm:w-36 bg-slate-200 overflow-hidden">
+          <div className="group relative rounded-xl h-64 sm:h-32 sm:w-36 bg-slate-200 overflow-hidden">
             <Image src={product7} alt="product" />
           </div>
-          <div className="group relative rounded-xl h-96 sm:h-32 sm:w-36 bg-slate-200 overflow-hidden">
+          <div className="group relative rounded-xl h-64 sm:h-32 sm:w-36 bg-slate-200 overflow-hidden">
             <Image src={product6} alt="product" />
           </div>
-          <div className="group relative rounded-xl h-96 sm:h-32 sm:w-36 bg-slate-200 overflow-hidden">
+          <div className="group relative rounded-xl h-64 sm:h-32 sm:w-36 bg-slate-200 overflow-hidden">
             <Image src={category1} alt="product" />
           </div>
         </div>

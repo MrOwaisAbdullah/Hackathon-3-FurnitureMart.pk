@@ -54,7 +54,7 @@ const ProductCard = ({ product }: { product: ProductCards }) => {
           <Link href={`/product/${product?.slug.current}`}>
             {product.image ? (
               <Image
-                className="object-cover hover:scale-110 duration-200 overflow-hidden min-h-64 md:max-h-64"
+                className="object-cover hover:scale-110 duration-200 overflow-hidden"
                 src={urlFor(product.image).url()}
                 alt={product?.title || "Product image"}
                 width={500}

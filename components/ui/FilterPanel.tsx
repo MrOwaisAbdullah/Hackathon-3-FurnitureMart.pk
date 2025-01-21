@@ -31,7 +31,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   categories,
 }) => {
   return (
-    <div className="p-4 bg-white shadow-md rounded-lg">
+    <div className="">
       <h3 className="text-lg font-semibold mb-4">Filters</h3>
 
       <div className="mb-6">
