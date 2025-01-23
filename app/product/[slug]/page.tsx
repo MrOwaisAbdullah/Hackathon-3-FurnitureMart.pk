@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import { inter } from "@/app/fonts";
 import { client } from "@/sanity/lib/client";
 import RelatedProducts from "@/components/ui/RelatedProducts";
-import { ProductCards } from "@/typing";
+import { ProductCards, Products } from "@/typing";
 import Link from "next/link";
 import SingleProduct from "@/components/sections/SingleProduct";
 
 const Page = ({ params: { slug } }: { params: { slug: string } }) => {
-  const [product, setProduct] = useState<ProductCards | null>(null);
+  const [product, setProduct] = useState<Products | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<ProductCards[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
