@@ -45,7 +45,7 @@ interface Product {
   image: SanityImageSource | null;
   description?: string; 
   slug?: {
-    current: string | null;
+    current: string ;
   };
 }
 

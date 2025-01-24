@@ -26,7 +26,7 @@ const ProductCard = ({ product }: { product: ProductCards }) => {
           price: product.price,
           image: product.image ? urlFor(product.image).url() : null,
           quantity: 1, // Default quantity is 1
-          slug: product.slug ? { current: product.slug.current || null } : undefined,
+          slug: { current: product.slug.current || "" },
         },
       });
 

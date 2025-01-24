@@ -38,7 +38,7 @@ const SingleProduct = ({ product }: { product: Products }) => {
           price: product.price,
           image: product.image ? urlFor(product.image).url() : null,
           quantity: quantity,
-          slug: product.slug ? { current: product.slug.current || null } : undefined,
+          slug: { current: product?.slug?.current || "" },
         },
       });
 
