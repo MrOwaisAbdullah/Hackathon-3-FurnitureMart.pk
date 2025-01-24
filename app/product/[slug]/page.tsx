@@ -1,5 +1,5 @@
-"use client"; // Mark this as a client component
-import React, { useEffect, useState } from "react";
+"use client"; 
+import React, { useState, useEffect } from "react";
 import { inter } from "@/app/fonts";
 import { client } from "@/sanity/lib/client";
 import RelatedProducts from "@/components/ui/RelatedProducts";
@@ -12,7 +12,8 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
   const [relatedProducts, setRelatedProducts] = useState<ProductCards[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch product and related products
+  console.log("Slug:", slug); // Debugging log
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,7 +38,14 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
 
         // Fetch related products based on category and tags
         if (productData) {
-          const relatedProductsQuery = `*[_type == "products" && _id != "${productData._id}" && (category->title == "${productData.category.title}" || tags[] match "${productData.tags.join(",")}")]{
+          const relatedProductsQuery = `*[
+            _type == "products" && 
+            _id != "${productData?._id}" && 
+            (
+              category->title == "${productData?.category.title}" || 
+              count(tags[@ in ["${productData?.tags.join('","')}"]]) > 0
+            )
+          ]{
             price,
             image,
             title,
@@ -47,9 +55,10 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
           }[0...5]`;
           const relatedProductsData = await client.fetch(relatedProductsQuery);
           setRelatedProducts(relatedProductsData);
+
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error); // Debugging log
       } finally {
         setIsLoading(false);
       }
@@ -66,6 +75,8 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
     return <div className="text-center py-10">Product not found.</div>;
   }
 
+
+
   return (
     <div className={`${inter.className} max-w-7xl m-auto xl:px-0 px-5 mt-24`}>
       <SingleProduct product={product} />
@@ -81,9 +92,13 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
 
       {/* Related Products */}
       <div className="grid grid-cols-1 sm:grid-cols-[auto,auto] md:grid-cols-[auto,auto,auto] lg:grid-cols-[auto,auto,auto,auto,auto] px-5 gap-5 mt-10">
-        {relatedProducts.map((product: ProductCards, index: number) => (
-          <RelatedProducts key={index} product={product} />
-        ))}
+        {relatedProducts.length > 0 ? (
+          relatedProducts.map((product: ProductCards, index: number) => (
+            <RelatedProducts key={index} product={product} />
+          ))
+        ) : (
+          <p className="text-center col-span-full">No related products found.</p>
+        )}
       </div>
     </div>
   );
