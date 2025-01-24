@@ -12,8 +12,6 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
   const [relatedProducts, setRelatedProducts] = useState<ProductCards[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log("Slug:", slug); // Debugging log
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -58,7 +56,7 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
 
         }
       } catch (error) {
-        console.error("Error fetching data:", error); // Debugging log
+        console.error("Error fetching data:", error); 
       } finally {
         setIsLoading(false);
       }
@@ -68,11 +66,11 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
   }, [slug]);
 
   if (isLoading) {
-    return <div className="text-center py-10">Loading Product...</div>;
+    return <div className="flex text-center item-center justify-center font-medium py-10">Loading Product...</div>;
   }
 
   if (!product) {
-    return <div className="text-center py-10">Product not found.</div>;
+    return <div className="flex text-center item-center justify-center font-medium py-10">Product not found.</div>;
   }
 
 
