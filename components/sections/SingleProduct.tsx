@@ -38,6 +38,7 @@ const SingleProduct = ({ product }: { product: Products }) => {
           price: product.price,
           image: product.image ? urlFor(product.image).url() : null,
           quantity: quantity,
+          slug: product.slug ? { current: product.slug.current || null } : undefined,
         },
       });
 
@@ -82,7 +83,6 @@ const SingleProduct = ({ product }: { product: Products }) => {
           {product.description}
         </p>
         <div className="flex items-center gap-4 mb-3">
-        <div className="flex items-center gap-4 mb-3">
           <label htmlFor="quantity" className="text-sm font-medium">
             Quantity:
           </label>
@@ -94,8 +94,7 @@ const SingleProduct = ({ product }: { product: Products }) => {
             onChange={handleQuantityChange}
             className="border rounded px-3 py-1 w-20"
           />
-        </div>
-        <WishlistButton product={product} />
+          <WishlistButton product={product} />
         </div>
         <button
           onClick={handleAddToCart}

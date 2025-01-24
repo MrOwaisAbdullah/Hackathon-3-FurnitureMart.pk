@@ -3,11 +3,11 @@
 import Image from "next/image";
 import React from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { FiHeart } from "react-icons/fi";
 import { inter } from "../fonts";
 import { useCart } from "@/app/context/CartContext";
 import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
+import { WishlistButton } from "@/components/ui/WishListButton";
 
 const Cart = () => {
   const { state, dispatch } = useCart();
@@ -42,25 +42,28 @@ const Cart = () => {
             <div className="flex flex-col justify-between">
               <div className="flex flex-col w-full pb-10 items-center justify-center">
                 {state.cart.map((item) => (
-                  
                   <div
                     className="flex gap-5 border-b w-full py-5"
                     key={item._id}
                   >
                     {item.image ? (
-                                  <Image
-                                  className="mt-2 sm:mt-0 w-28 h-28 object-cover rounded-lg"
-                                  src={urlFor(item.image).url()}
-                                  alt={item.title}
-                                  width={100}
-                                  height={100}
-                                />
-                                ) : (
-                                  <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
-                                    <p className="text-gray-500 text-center">No Image Available</p>
-                                  </div>
-                                )}
-                    
+                      <Link href={`/product/${item?.slug?.current}`}>
+                        <Image
+                          className="mt-2 sm:mt-0 w-28 h-28 object-cover rounded-lg"
+                          src={urlFor(item.image).url()}
+                          alt={item.title}
+                          width={100}
+                          height={100}
+                        />
+                      </Link>
+                    ) : (
+                      <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
+                        <p className="text-gray-500 text-center">
+                          No Image Available
+                        </p>
+                      </div>
+                    )}
+
                     <div className="gap-1 sm:gap-3 w-full flex flex-col">
                       <div className="flex flex-col sm:flex-row justify-between gap-1">
                         <h2 className="text-accent">{item.title}</h2>
@@ -81,9 +84,9 @@ const Cart = () => {
 
                       <div className="flex gap-4 mt-1 text-accent text-lg">
                         <button>
-                          <FiHeart />
+                          <WishlistButton product={item} />
                         </button>
-                        <button onClick={() => handleRemove(item._id)}>
+                        <button className="p-2 rounded-full hover:bg-gray-100 transition-colors" onClick={() => handleRemove(item._id)}>
                           <RiDeleteBinLine />
                         </button>
                       </div>

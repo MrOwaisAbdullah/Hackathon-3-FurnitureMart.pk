@@ -136,7 +136,7 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
   }
 
   return (
-    <div className="grid grid-col-1 lg:grid-cols-3 xl:grid-cols-4 px-5 gap-5">
+    <div className="grid grid-col-1 lg:grid-cols-4 px-5 gap-5">
       <div className="col-span-1 mt-2">
         <Drawer direction="bottom" open={isOpen} onOpenChange={setIsOpen}>
           {/* Button to Toggle Drawer */}
@@ -162,7 +162,7 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
           />
         </span>
       </div>
-      <div className="flex flex-col lg:col-start-2 lg:col-span-2 xl:col-span-3 justify-center items-center m-auto">
+      <div className="flex flex-col lg:col-start-2 lg:col-span-3 justify-center items-center m-auto">
         <div className="grid grid-cols-1 xsm:grid-cols-[auto,auto] lg:grid-cols-[auto,auto,auto] mb-2 gap-5">
           {currentProducts.map((product) => (
             <ProductCard key={product._id} product={product} />

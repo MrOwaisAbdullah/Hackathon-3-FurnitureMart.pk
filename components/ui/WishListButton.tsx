@@ -39,9 +39,9 @@ export const WishlistButton = ({ product }: WishlistButtonProps) => {
       aria-label={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
     >
       {isInWishlist ? (
-        <FaHeart className="w-6 h-6 fill-red-500 stroke-red-500" />
+        <FaHeart className="w-5 h-5 fill-red-500 stroke-red-500" />
       ) : (
-        <FaRegHeart className="w-6 h-6" />
+        <FaRegHeart className="w-5 h-5" />
       )}
     </button>
   );

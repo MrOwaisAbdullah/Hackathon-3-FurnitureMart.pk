@@ -90,7 +90,7 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
       </div>
 
       {/* Related Products */}
-      <div className="grid grid-cols-1 sm:grid-cols-[auto,auto] md:grid-cols-[auto,auto,auto] lg:grid-cols-[auto,auto,auto,auto,auto] px-5 gap-5 mt-10">
+      <div className="grid grid-cols-1 xsm:grid-cols-[auto,auto] md:grid-cols-[auto,auto,auto] lg:grid-cols-[auto,auto,auto,auto,auto] gap-5 px-5 justify-content-center">
         {relatedProducts.length > 0 ? (
           relatedProducts.map((product: ProductCards, index: number) => (
             <RelatedProducts key={index} product={product} />

@@ -44,6 +44,9 @@ interface Product {
   quantity?: number;
   image: SanityImageSource | null;
   description?: string; 
+  slug?: {
+    current: string | null;
+  };
 }
 
 interface CartState {
