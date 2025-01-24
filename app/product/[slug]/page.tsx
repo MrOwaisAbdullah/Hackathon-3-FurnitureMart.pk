@@ -48,6 +48,7 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
             image,
             title,
             slug,
+            tags,
             "isDiscounted": priceWithoutDiscount > 0,
             "isNew": createdAt > now() - 30 * 24 * 60 * 60 * 1000,
           }[0...5]`;
