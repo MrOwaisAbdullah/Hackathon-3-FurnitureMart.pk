@@ -136,7 +136,7 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
   }
 
   return (
-    <div className="grid grid-col-1 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+    <div className="grid grid-col-1 lg:grid-cols-3 xl:grid-cols-4 px-5 gap-5">
       <div className="col-span-1 mt-2">
         <Drawer direction="bottom" open={isOpen} onOpenChange={setIsOpen}>
           {/* Button to Toggle Drawer */}
