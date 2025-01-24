@@ -107,28 +107,3 @@ export interface WishlistItem {
   image: string;
   slug: { current: string };
 }
-
-interface Order {
-  _id: string;
-  customer: {
-    name: string;
-    email: string;
-  };
-  products: {
-    product: {
-      title: string;
-      price: number;
-    };
-    quantity: number;
-  }[];
-  total: number;
-  paymentDetails: {
-    amountPaid: number;
-    paymentMethod: string;
-    transactionId: string;
-  };
-  status: string;
-  paymentStatus: string;
-  shippingAddress: string;
-  createdAt: string;
-}
