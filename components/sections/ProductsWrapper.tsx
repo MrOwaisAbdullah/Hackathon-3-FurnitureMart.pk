@@ -7,9 +7,6 @@ import FilterPanel from "@/components/ui/FilterPanel";
 import Pagination from "@/components/ui/Pagination";
 import { ProductCards } from "@/typing";
 import { Drawer, DrawerContent } from "../ui/drawer";
-import { IoFilterOutline } from "react-icons/io5";
-import { CiFilter } from "react-icons/ci";
-import { FaFilter } from "react-icons/fa";
 import { IoMdOptions } from "react-icons/io";
 
 interface ProductsClientWrapperProps {
@@ -32,8 +29,6 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
 
   // Function to toggle the drawer's open/close state
   const toggleDrawer = () => setIsOpen((prev) => !prev);
-  // Function to explicitly close the drawer
-  const closeDrawer = () => setIsOpen(false);
 
   // Get initial values from URL
   const initialPage = Number(searchParams.get("page")) || 1;

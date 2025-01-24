@@ -109,10 +109,10 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [state.wishlist]);
 
+  const { dispatch: cartDispatch } = useCart(); // Get cart dispatch
+
   // Function to move item from wishlist to cart
   const moveToCart = (product: WishlistItem) => {
-    const { dispatch: cartDispatch } = useCart(); // Get cart dispatch
-
     cartDispatch({
       type: "ADD_TO_CART",
       product: { ...product, quantity: 1 },
