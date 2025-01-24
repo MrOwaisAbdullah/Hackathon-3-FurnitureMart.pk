@@ -55,7 +55,7 @@ const DrawerContent = React.forwardRef<
         ref={ref}
         className={cn(
           "fixed z-50 flex h-auto flex-col border",
-          (!direction || direction === "bottom") && "inset-x-0 bottom-0 mt-24 rounded-t-[10px] ",
+          (!direction || direction === "bottom") && "inset-x-0 bottom-0 h-[80vh] mt-24 rounded-t-[10px] ",
           direction === "right" && "right-0 w-screen max-w-md top-0 h-full",
           direction === "left" && "left-0 w-screen max-w-md top-0 h-full",
           direction === "top" && "inset-x-0 top-0 mb-24 rounded-b-[10px]",
@@ -69,7 +69,9 @@ const DrawerContent = React.forwardRef<
         {(direction === "top") && (
           <div className="mx-auto mb-4 h-2 w-[100px] rounded-full bg-muted" />
         )}
-        {children}
+        <div className="overflow-y-auto flex-1 p-6">
+          {children}
+        </div>
       </DrawerPrimitive.Content>
     </DrawerPortal>
   );

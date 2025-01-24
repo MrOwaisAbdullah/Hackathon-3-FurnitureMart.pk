@@ -136,12 +136,12 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
   }
 
   return (
-    <div className="grid grid-col-1 md:grid-col-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+    <div className="grid grid-col-1 lg:grid-cols-3 xl:grid-cols-4 gap-5">
       <div className="col-span-1 mt-2">
         <Drawer direction="bottom" open={isOpen} onOpenChange={setIsOpen}>
           {/* Button to Toggle Drawer */}
-          <button onClick={toggleDrawer} className="text-3xl md:hidden">
-            <span className="flex items-center text-2xl font-medium gap-1">Filters<IoMdOptions/>
+          <button onClick={toggleDrawer} className="text-3xl lg:hidden">
+            <span className="flex mx-5 items-center text-2xl font-medium gap-1">Filters<IoMdOptions/>
             </span>
           </button>
           <DrawerContent className="bg-background mx-auto text-left p-6 w-full">
@@ -153,7 +153,7 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
             />
           </DrawerContent>
         </Drawer>
-        <span className="hidden md:block p-4 bg-white shadow-md rounded-lg">
+        <span className="hidden lg:block p-4 bg-white shadow-md rounded-lg">
           <FilterPanel
             filters={filters}
             onFilterChange={handleFilterChange}
@@ -162,8 +162,8 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
           />
         </span>
       </div>
-      <div className="sm:col-start-2 lg:col-span-2 xl:col-span-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-2 gap-5">
+      <div className="flex flex-col lg:col-start-2 lg:col-span-2 xl:col-span-3 justify-center items-center m-auto">
+        <div className="grid grid-cols-1 xsm:grid-cols-[auto,auto] lg:grid-cols-[auto,auto,auto] mb-2 gap-5">
           {currentProducts.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}

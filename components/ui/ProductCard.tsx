@@ -40,9 +40,9 @@ const ProductCard = ({ product }: { product: ProductCards }) => {
 
   return (
     <div
-      className={`${inter.className} relative flex flex-col cursor-pointer group mt-5`}
+      className={`${inter.className} max-w-80 relative flex flex-col cursor-pointer group mt-5`}
     >
-      <div className="cursor-pointer z-0 relative group bg-gray-200 sm:max-h-64 rounded overflow-hidden">
+      <div className="cursor-pointer z-0 relative group bg-gray-200 rounded overflow-hidden">
         <div
           className={`${
             product?.isDiscounted || product?.isNew
@@ -54,7 +54,7 @@ const ProductCard = ({ product }: { product: ProductCards }) => {
           <Link href={`/product/${product?.slug.current}`}>
             {product.image ? (
               <Image
-                className="object-cover hover:scale-110 duration-200 overflow-hidden"
+                className="object-cover min-h-80 rounded scale-110 sm:scale-100 hover:scale-110 duration-200 overflow-hidden"
                 src={urlFor(product.image).url()}
                 alt={product?.title || "Product image"}
                 width={500}
