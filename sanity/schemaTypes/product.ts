@@ -95,7 +95,7 @@ export default defineType({
         list: [
           { title: "Featured", value: "featured" },
           {
-            title: "Follow products and discounts on Instagram",
+            title: "Instagram",
             value: "instagram",
           },
           { title: "Gallery", value: "gallery" },

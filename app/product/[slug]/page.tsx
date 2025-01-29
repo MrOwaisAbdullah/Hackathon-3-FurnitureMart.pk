@@ -6,6 +6,7 @@ import RelatedProducts from "@/components/ui/RelatedProducts";
 import { ProductCards, Products } from "@/typing";
 import Link from "next/link";
 import SingleProduct from "@/components/sections/SingleProduct";
+import Loader from "@/components/ui/Loader";
 
 const Page = ({ params: { slug } }: { params: { slug: string } }) => {
   const [product, setProduct] = useState<Products | null>(null);
@@ -67,7 +68,7 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
   }, [slug]);
 
   if (isLoading) {
-    return <div className="flex text-center item-center justify-center font-medium py-10">Loading Product...</div>;
+    return <Loader />;
   }
 
   if (!product) {
