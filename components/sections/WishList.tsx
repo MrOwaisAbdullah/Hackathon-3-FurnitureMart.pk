@@ -109,7 +109,7 @@ export default function WishlistPage() {
                         href={`/product/${product.slug.current}`}
                         className="block group"
                       >
-                        <h3 className="text-base font-medium text-gray-900 truncate group-hover:text-gray-600 transition-colors">
+                        <h3 className="text-base font-medium text-gray-900 truncate group-hover:text-primary transition-colors">
                           {product.title}
                         </h3>
                         <p className="mt-1 text-lg font-medium text-gray-900">
