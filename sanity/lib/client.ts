@@ -53,7 +53,7 @@ export async function getCategories(): Promise<string[]> {
 export async function getSellers(): Promise<Seller[]> {
   const query = `*[_type == "seller"]{
     _id,
-    name,
+    shopName,
   }`;
   const result = await client.fetch(query);
   return result;

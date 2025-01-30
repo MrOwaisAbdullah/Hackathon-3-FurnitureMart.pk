@@ -109,7 +109,7 @@ const Header = () => {
                   Home
                 </Link>
                 <Link
-                  href="/products"
+                  href="/shop"
                   className="mr-9 text-lg text-[#636270] active:text-primary hover:text-primary"
                   onClick={closeDrawer}
                 >
@@ -162,7 +162,7 @@ const Header = () => {
               Home
             </Link>
             <Link
-              href="/products"
+              href="/shop"
               className="mr-9 text-sm text-[#636270] active:text-primary hover:text-primary"
             >
               Shop

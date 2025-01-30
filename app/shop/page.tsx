@@ -10,20 +10,35 @@ import category from "@/Public/category.png";
 import category1 from "@/Public/category1.png";
 import { getCategories, getProducts, getSellers } from "@/sanity/lib/client";
 import ProductsClientWrapper from "@/components/sections/ProductsWrapper";
+import Link from "next/link";
+import Loader from "@/components/ui/Loader";
 
-const Products = async () => {
+const shop = async () => {
   // Fetch all products, categories, and sellers
   const categories = await getCategories();
   const products = await getProducts();
   const sellers = await getSellers();
   return (
     <div className={`${inter.className} max-w-7xl m-auto pt-16 -mb-28`}>
+      {/* Breadcrumb */}
+      <nav className="mb-6 mx-5">
+        <ol className="flex items-center space-x-2 text-sm text-gray-500">
+          <li>
+            <Link href="/" className="hover:text-gray-800">
+              Home
+            </Link>
+          </li>
+          <li>/</li>
+          <li className="font-medium text-gray-800">Shop</li>
+        </ol>
+      </nav>
       <h2 className="heading xl:px-28 text-center">Our Products</h2>
       {/* Wrap ProductsClientWrapper in Suspense */}
       <div className="mx-3">
         <Suspense
           fallback={
-            <div className="flex justify-center items-center font-medium">
+            <div className="flex justify-center items-center font-medium gap-5">
+              <Loader />
               Loading products...
             </div>
           }
@@ -79,4 +94,4 @@ const Products = async () => {
   );
 };
 
-export default Products;
+export default shop;

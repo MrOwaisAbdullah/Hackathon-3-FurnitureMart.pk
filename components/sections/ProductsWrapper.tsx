@@ -12,7 +12,7 @@ import { IoMdOptions } from "react-icons/io";
 interface ProductsClientWrapperProps {
   categories: string[];
   products: ProductCards[];
-  sellers: { _id: string; name: string }[];
+  sellers: { _id: string; shopName: string }[];
 }
 
 const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
@@ -32,7 +32,7 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
 
   // Get initial values from URL
   const initialPage = Number(searchParams.get("page")) || 1;
-  const pageSize = 6;
+  const pageSize = 12;
 
   // States
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -162,8 +162,8 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
           />
         </span>
       </div>
-      <div className="flex flex-col lg:col-start-2 lg:col-span-3 justify-center items-center m-auto">
-        <div className="grid grid-cols-1 xsm:grid-cols-[auto,auto] lg:grid-cols-[auto,auto,auto] mb-2 gap-5">
+      <div className="flex flex-col lg:col-start-2 lg:col-span-3 md:px-5">
+        <div className="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 mb-2 gap-5">
           {currentProducts.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}

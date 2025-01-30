@@ -24,7 +24,7 @@ const SocialSharing: React.FC<SocialSharingProps> = ({ productUrl, productTitle 
   };
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex justify-center md:justify-start items-center space-x-4">
       {/* Facebook */}
       <button onClick={shareOnFacebook} aria-label="Share on Facebook">
         <FaFacebook size={32} className="text-blue-600 hover:text-blue-700" />

@@ -1,5 +1,4 @@
 "use client";
-
 import { useCart } from "@/app/context/CartContext";
 import { PiShoppingCart } from "react-icons/pi";
 import React, { useState, useCallback } from "react";
@@ -15,7 +14,6 @@ const SingleProduct = ({ product }: { product: Products }) => {
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const productUrl = `${window.location.origin}/products/${product.slug?.current}`;
-
 
   // Use the notifications context
   const { addNotification } = useNotifications();
@@ -33,7 +31,7 @@ const SingleProduct = ({ product }: { product: Products }) => {
       dispatch({
         type: "ADD_TO_CART",
         product: {
-           _id: product._id,
+          _id: product._id,
           title: product.title,
           price: product.price,
           image: product.image ? urlFor(product.image).url() : null,
@@ -41,11 +39,10 @@ const SingleProduct = ({ product }: { product: Products }) => {
           slug: { current: product?.slug?.current || "" },
         },
       });
-
       // Trigger a success notification
       addNotification("Added to cart successfully!", "success");
       setQuantity(1); // Reset quantity after adding
-    }catch (error) {
+    } catch (error) {
       // Trigger an error notification
       addNotification("Failed to add to cart. Please try again.", "error");
       console.error(error);
@@ -55,34 +52,35 @@ const SingleProduct = ({ product }: { product: Products }) => {
   }, [dispatch, product, quantity, addNotification]);
 
   return (
-    <div className="flex flex-wrap xl:flex-nowrap gap-36 justify-center text-center xl:justify-start xl:text-left">
+    <div className="flex flex-col md:flex-row gap-8 justify-center px-4 md:px-6 lg:px-16 py-8">
       {/* Product Image */}
-      <div className="">
-      {product.image ? (
-              <Image
-              className="rounded-xl xl:ml-14 xl:w-[800px] xl:h-[550px] object-cover"
-              src={urlFor(product.image).url()}
-              alt={product.title}
-              priority
-              width={2000}
-              height={2000}
-            ></Image>
-            ) : (
-              <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
-                <p className="text-gray-500 text-center">No Image Available</p>
-              </div>
-            )}
+      <div className="w-full md:w-1/2 relative aspect-square md:aspect-[4/3] rounded-xl overflow-hidden">
+        {product.image ? (
+          <Image
+            className="object-cover w-full h-full"
+            src={urlFor(product.image).url()}
+            alt={product.title}
+            priority
+            fill // Automatically fills the parent container
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+            <p className="text-gray-500 text-center">No Image Available</p>
+          </div>
+        )}
       </div>
+
       {/* Product Details */}
-      <div className="xl:w-1/2 m-0 flex flex-col items-center xl:items-start">
-        <h1 className="text-5xl xl:w-96 font-bold">{product.title}</h1>
-        <p className="bg-primary py-1 px-3 font-medium my-6 text-lg text-white rounded-full inline-block">
+      <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left">
+        <h1 className="text-3xl lg:text-5xl font-bold">{product.title}</h1>
+        <p className="bg-primary py-1 px-4 font-medium my-6 text-lg text-white rounded-full inline-block">
           ${product.price} USD
         </p>
-        <p className="text-lg py-10 border-t text-[#7d7b8e]">
+        <p className="text-lg py-4 border-t text-[#7d7b8e]">
           {product.description}
         </p>
-        <div className="flex items-center gap-4 mb-3">
+        <div className="flex items-center gap-4 mb-4">
           <label htmlFor="quantity" className="text-sm font-medium">
             Quantity:
           </label>
@@ -92,7 +90,7 @@ const SingleProduct = ({ product }: { product: Products }) => {
             min="1"
             value={quantity}
             onChange={handleQuantityChange}
-            className="border rounded px-3 py-1 w-20"
+            className="border rounded px-3 py-1 w-20 focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <WishlistButton product={product} />
         </div>
@@ -103,13 +101,14 @@ const SingleProduct = ({ product }: { product: Products }) => {
             ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent'}`}
         >
           <PiShoppingCart className="text-2xl" />
-          {isLoading ? 'Adding...' : 'Add to Cart'}
+          {isLoading ? "Adding..." : "Add to Cart"}
         </button>
-                    {/* Social Sharing Component */}
-                    <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-4">Share this product:</h3>
-        <SocialSharing productUrl={productUrl} productTitle={product.title} />
-      </div>
+
+        {/* Social Sharing Component */}
+        <div className="mt-8 w-full">
+          <h3 className="text-lg font-semibold mb-4">Share this product:</h3>
+          <SocialSharing productUrl={productUrl} productTitle={product.title} />
+        </div>
       </div>
     </div>
   );

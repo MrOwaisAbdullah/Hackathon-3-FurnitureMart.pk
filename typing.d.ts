@@ -89,12 +89,15 @@ interface Order {
 
 interface Seller {
   _id: string;
-  name: string;
+  shopName: string;
+  clerkId?: string;
+  ownerName?: string;
   email?: string;
   phone?: string;
   address?: string;
-  logo?: SanityImageSource;
-  products?: { _ref: string }[]; // Array of product references
+  businessType?: "showroom" | "workshop" | "both";
+  isApproved?: boolean;
+  logoUrl?: string;
 }
 
 export interface WishlistAction {

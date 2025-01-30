@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 import React, { useState, useEffect } from "react";
 import { inter } from "@/app/fonts";
 import { client } from "@/sanity/lib/client";
@@ -55,10 +55,9 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
           }[0...5]`;
           const relatedProductsData = await client.fetch(relatedProductsQuery);
           setRelatedProducts(relatedProductsData);
-
         }
       } catch (error) {
-        console.error("Error fetching data:", error); 
+        console.error("Error fetching data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -72,32 +71,51 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
   }
 
   if (!product) {
-    return <div className="flex text-center item-center justify-center font-medium py-10">Product not found.</div>;
+    return (
+      <div className="flex text-center item-center justify-center font-medium py-10">
+        Product not found.
+      </div>
+    );
   }
-
-
 
   return (
     <div className={`${inter.className} max-w-7xl m-auto xl:px-0 px-5 mt-24`}>
+      {/* Breadcrumb */}
+      <nav className="mb-6 mx-5">
+        <ol className="flex items-center space-x-2 text-sm text-gray-500">
+          <li>
+            <Link href="/" className="hover:text-gray-800">
+              Home
+            </Link>
+          </li>
+          <li>/</li>
+          <li className="font-medium text-gray-800 capitalize">
+            {product.title}
+          </li>
+        </ol>
+      </nav>
+
       <SingleProduct product={product} />
 
-      <div className="flex justify-between mx-5 mt-24">
+      <div className="flex justify-between mx-5 mb-4 mt-24">
         <h2 className="text-2xl uppercase font-bold">Related Products</h2>
-        <Link href={"/products"}>
+        <Link href={"/shop"}>
           <p className="text-lg font-bold underline underline-offset-4">
             View All
           </p>
         </Link>
       </div>
 
-      {/* Related Products */}
-      <div className="grid grid-cols-1 xsm:grid-cols-[auto,auto] md:grid-cols-[auto,auto,auto] lg:grid-cols-[auto,auto,auto,auto,auto] gap-5 px-5 justify-content-center">
+      {/* Related Products Section */}
+      <div className="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 px-5 justify-items-center">
         {relatedProducts.length > 0 ? (
-          relatedProducts.map((product: ProductCards, index: number) => (
-            <RelatedProducts key={index} product={product} />
+          relatedProducts.map((product, index) => (
+            <RelatedProducts key={product._id || index} product={product} />
           ))
         ) : (
-          <p className="text-center col-span-full">No related products found.</p>
+          <p className="text-center col-span-full text-gray-500">
+            No related products found.
+          </p>
         )}
       </div>
     </div>

@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import { inter } from "../../app/fonts";
 import { PiShoppingCart } from "react-icons/pi";
@@ -12,8 +11,6 @@ import { useNotifications } from "@/app/context/NotificationContext";
 
 const ProductCard = ({ product }: { product: ProductCards }) => {
   const { dispatch } = useCart();
-
-  // Use the notifications context
   const { addNotification } = useNotifications();
 
   const handleAddToCart = () => {
@@ -21,7 +18,7 @@ const ProductCard = ({ product }: { product: ProductCards }) => {
       dispatch({
         type: "ADD_TO_CART",
         product: {
-          _id: product._id, 
+          _id: product._id,
           title: product.title,
           price: product.price,
           image: product.image ? urlFor(product.image).url() : null,
@@ -29,11 +26,8 @@ const ProductCard = ({ product }: { product: ProductCards }) => {
           slug: { current: product.slug.current || "" },
         },
       });
-
-      // Trigger a success notification
       addNotification("Added to cart successfully!", "success");
     } catch (error) {
-      // Trigger an error notification
       addNotification("Failed to add to cart. Please try again.", "error");
       console.error(error);
     }
@@ -41,76 +35,63 @@ const ProductCard = ({ product }: { product: ProductCards }) => {
 
   return (
     <div
-      className={`${inter.className} max-w-80 relative flex flex-col cursor-pointer group mt-5`}
+      className={`${inter.className} w-full sm:max-w-[250px] flex flex-col cursor-pointer group mt-5 justify-center`}
     >
-      <div className="cursor-pointer z-0 relative group bg-gray-200 rounded overflow-hidden">
-        <div
-          className={`${
-            product?.isDiscounted || product?.isNew
-              ? "flex justify-between"
-              : "flex justify-end"
-          }`}
-        >
-          {/* Dynamically add Product Image */}
-          <Link href={`/product/${product?.slug.current}`}>
-            {product.image ? (
-              <Image
-                className="object-cover min-h-80 rounded scale-110 sm:scale-100 hover:scale-110 duration-200 overflow-hidden"
-                src={urlFor(product.image).url()}
-                alt={product?.title || "Product image"}
-                width={500}
-                height={1000}
-              />
-            ) : (
-              <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
-                <p className="text-gray-500 text-center">No Image Available</p>
-              </div>
-            )}
-          </Link>
-          {/* dynamically add the New or Discount Tag if they are provided */}
+      {/* Card Image Container */}
+      <div className="relative bg-gray-200 rounded overflow-hidden aspect-square">
+        <Link href={`/product/${product?.slug.current}`}>
+          {product.image ? (
+            <Image
+              className="object-cover w-full h-full scale-110 sm:scale-100 hover:scale-110 duration-200"
+              src={urlFor(product.image).url()}
+              alt={product?.title || "Product image"}
+              fill // Automatically fills the parent container
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+              <p className="text-gray-500 text-center">No Image Available</p>
+            </div>
+          )}
+        </Link>
+
+        {/* Discount and New Tags */}
+        {product?.isDiscounted && (
+          <div className="bg-highlight absolute top-3 left-3 z-10 px-2 py-1 rounded text-white text-xs">
+            SALE!
+          </div>
+        )}
+        {product?.isNew && (
           <div
             className={`${
               product?.isDiscounted
-                ? "bg-highlight absolute top-3 left-3 max-w-20 z-10 max-h-7 flex flex-wrap p-1 px-2 rounded text-white text-xs overflow-hidden justify-center items-center"
-                : "hidden"
-            }`}
-          >
-            SALE!
-          </div>
-          <div
-            className={`${
-              product?.isNew
-                ? product?.isDiscounted
-                  ? "bg-highlight2 absolute top-10 left-3 max-w-20 z-10 max-h-7 flex flex-wrap p-1 px-2 rounded text-white text-xs overflow-hidden justify-center items-center"
-                  : "bg-highlight2 absolute top-3 left-3 max-w-20 z-10 max-h-7 flex flex-wrap p-1 px-2 rounded text-white text-xs overflow-hidden justify-center items-center"
-                : "hidden"
-            }`}
+                ? "bg-highlight2 absolute top-10 left-3 z-10"
+                : "bg-highlight2 absolute top-3 left-3 z-10"
+            } px-2 py-1 rounded text-white text-xs`}
           >
             NEW
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Dynamically adding Product Name, new Prices and old price, if the old price is not provided dont show it  */}
-      <div className="relative flex items-center justify-between mt-3">
-        <div className="flex flex-col p-0 justify-left text-left">
+      {/* Product Details */}
+      <div className="flex items-center justify-between mt-3">
+        <div className="flex flex-col">
           <Link href={`/product/${product.slug.current}`}>
             <h2 className="group-hover:text-primary mb-1">{product?.title}</h2>
           </Link>
           <div className="flex gap-1 items-center -mt-1">
             <p className="text-lg font-semibold">{`$${product?.price}`}</p>
-            <p
-              className={`${
-                product?.priceWithoutDiscount
-                  ? "text-sm text-[#9A9CAA] pl-1 line-through"
-                  : "hidden"
-              }`}
-            >{`$${product?.priceWithoutDiscount}`}</p>
+            {product?.priceWithoutDiscount && (
+              <p className="text-sm text-[#9A9CAA] line-through">
+                {`$${product?.priceWithoutDiscount}`}
+              </p>
+            )}
           </div>
         </div>
-        <div className="flex bg-secondary p-2 justify-end rounded-[8px] hover:bg-primary cursor-pointer hover:text-white ">
+        <div className="flex bg-secondary p-2 rounded-[8px] hover:bg-primary cursor-pointer hover:text-white">
           <button onClick={handleAddToCart}>
-            <PiShoppingCart className="text-xl flex" />
+            <PiShoppingCart className="text-xl" />
           </button>
         </div>
       </div>

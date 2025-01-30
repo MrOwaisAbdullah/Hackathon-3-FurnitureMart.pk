@@ -1,4 +1,5 @@
 import { inter, poppins } from "@/app/fonts";
+import Link from "next/link";
 import React from "react";
 import { BiSupport } from "react-icons/bi";
 import { BsPatchCheck } from "react-icons/bs";
@@ -9,7 +10,19 @@ import { SlTrophy } from "react-icons/sl";
 
 const Contact = () => {
   return (
-    <div className={`${poppins.className} pt-28 -mb-28 max-w-7xl m-auto`}>
+    <div className={`${poppins.className} pt-12 -mb-28 max-w-7xl m-auto`}>
+      {/* Breadcrumb */}
+      <nav className="mb-6 mx-5">
+        <ol className="flex items-center space-x-2 text-sm text-gray-500">
+          <li>
+            <Link href="/" className="hover:text-gray-800">
+              Home
+            </Link>
+          </li>
+          <li>/</li>
+          <li className="font-medium text-gray-800">Contact</li>
+        </ol>
+      </nav>
       <h2 className={`heading xl:px-0 px-8 text-center font-semibold text-4xl`}>
         Get In Touch With Us
       </h2>
