@@ -13,7 +13,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { PiShoppingCart } from "react-icons/pi";
 import Image from "next/image";
 import logo from "../../Public/Logo Icon.png";
-import { CiCircleAlert } from "react-icons/ci";
+import { CiCircleAlert, CiHeart } from "react-icons/ci";
 import { useCart } from "@/app/context/CartContext";
 
 const Header = () => {
@@ -73,6 +73,9 @@ const Header = () => {
             Comforty
           </Link>
           <div className="flex gap-5 items-center justify-center">
+            <Link href="/wishlist" className="hidden xs:flex items-center gap-2 hover:text-primary">
+            <CiHeart className="w-6 h-6 " />
+            </Link>
           <Link href={"/cart"}>
             <div className="group bg-white py-3 px-5 rounded-xl gap-3 hidden xs:flex items-center justify-center max-w-40 ">
               <PiShoppingCart className="text-2xl group-hover:text-primary flex items-center justify-center" />

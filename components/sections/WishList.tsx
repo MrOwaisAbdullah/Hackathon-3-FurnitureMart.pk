@@ -78,10 +78,10 @@ export default function WishlistPage() {
                 </p>
               </div>
               <Link
-                href="/"
+                href="/shop"
                 className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded bg-primary text-white hover:bg-accent transition-colors duration-200"
               >
-                Explore Collection
+                Explore Furniture
               </Link>
             </div>
           ) : (

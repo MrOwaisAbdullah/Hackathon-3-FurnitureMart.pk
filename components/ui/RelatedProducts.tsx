@@ -6,7 +6,7 @@ import React from "react";
 
 const RelatedProducts = ({ product }: { product: ProductCards }) => {
   return (
-    <div className="relative flex flex-col cursor-pointer group w-full max-w-[250px]">
+    <div className="relative flex flex-col cursor-pointer group w-full md:max-w-[250px]">
       {/* Card Image Container */}
       <div className="relative bg-gray-200 rounded overflow-hidden aspect-square">
         <Link href={`/product/${product.slug.current}`}>

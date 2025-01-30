@@ -34,18 +34,6 @@ const Cart = () => {
     <div
       className={`${inter.className} overflow-hidden flex flex-wrap xl:flex-nowrap xl:px-0 px-8 gap-16 my-20 max-w-7xl m-auto`}
     >
-      {/* Breadcrumb */}
-      <nav className="mb-6 mx-5">
-        <ol className="flex items-center space-x-2 text-sm text-gray-500">
-          <li>
-            <Link href="/" className="hover:text-gray-800">
-              Home
-            </Link>
-          </li>
-          <li>/</li>
-          <li className="font-medium text-gray-800">Cart</li>
-        </ol>
-      </nav>
       {/* Cart Products */}
       <div className="flex flex-col xl:w-[65%] w-full">
         <div className="">
@@ -98,10 +86,7 @@ const Cart = () => {
                         <button>
                           <WishlistButton product={item} />
                         </button>
-                        <button
-                          className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                          onClick={() => handleRemove(item._id)}
-                        >
+                        <button className="p-2 rounded-full hover:bg-gray-100 transition-colors" onClick={() => handleRemove(item._id)}>
                           <RiDeleteBinLine />
                         </button>
                       </div>

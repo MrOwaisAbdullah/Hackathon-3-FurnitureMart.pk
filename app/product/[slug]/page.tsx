@@ -89,6 +89,12 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
             </Link>
           </li>
           <li>/</li>
+          <li>
+            <Link href="/shop" className="hover:text-gray-800">
+              Shop
+            </Link>
+          </li>
+          <li>/</li>
           <li className="font-medium text-gray-800 capitalize">
             {product.title}
           </li>
@@ -97,8 +103,8 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
 
       <SingleProduct product={product} />
 
-      <div className="flex justify-between mx-5 mb-4 mt-24">
-        <h2 className="text-2xl uppercase font-bold">Related Products</h2>
+      <div className="flex justify-between mx-2 md:mx-5 mb-8 mt-24">
+        <h2 className="text-lg md:text-2xl uppercase font-bold">Related Products</h2>
         <Link href={"/shop"}>
           <p className="text-lg font-bold underline underline-offset-4">
             View All
