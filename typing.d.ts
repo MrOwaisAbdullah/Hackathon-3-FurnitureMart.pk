@@ -47,6 +47,7 @@ interface Product {
   slug?: {
     current: string ;
   };
+  weight?: number;
 }
 
 interface CartState {
@@ -60,14 +61,15 @@ type CartAction =
   | { type: "UPDATE_QUANTITY"; id: string; quantity: number }
   | { type: "CLEAR_CART" };
 
-  interface ShippingDetails {
+  type ShippingDetails = {
     name: string;
     email: string;
     address: string;
     city: string;
+    state?: string;
     postalCode: string;
     country: string;
-  }
+  };
   
   interface Payments {
     cardNumber: string;
@@ -84,6 +86,7 @@ interface Order {
   id: string;
   cart: Products[];
   shipping: ShippingDetails;
+  tracking?: string;
   payment: Payments;
 }
 
@@ -112,4 +115,30 @@ export interface WishlistItem {
   price: number;
   image: string;
   slug: { current: string };
+}
+
+
+export interface ShippoRate {
+  objectId: string;
+  provider: string;
+  amount: number;
+  currency: string;
+  servicelevel: {
+    token: string;
+    name: string;
+  };
+  estimatedDays: number;
+  arrivesBy: string;
+}
+
+export interface ShippoRateDisplay {
+  objectId: string;
+  provider: string;
+  servicelevel: {
+    name: string;
+  };
+  amount: string;
+  currency: string;
+  transit_days: number;
+  estimated_days: number;
 }

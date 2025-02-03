@@ -1,9 +1,9 @@
-// utils/createOrder.ts
 import { Products, Payments, ShippingDetails, Order } from "@/typing";
 
 export const createOrder = async (orderDetails: {
   cart: Products[];
   shipping: ShippingDetails;
+  tracking?: string;
   payment: Payments;
 }): Promise<Order> => {
   // Simulate API call to create an order

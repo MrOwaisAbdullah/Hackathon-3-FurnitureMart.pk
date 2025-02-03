@@ -1,4 +1,3 @@
-// app/products/page.tsx
 import React, { Suspense } from "react"; // Import Suspense
 import { inter, roboto } from "../fonts";
 import Image from "next/image";
@@ -8,7 +7,7 @@ import product6 from "@/Public/product6.png";
 import product7 from "@/Public/product7.png";
 import category from "@/Public/category.png";
 import category1 from "@/Public/category1.png";
-import { getCategories, getProducts, getSellers } from "@/sanity/lib/client";
+import { getCategories, getProducts, getSellers } from "@/sanity/lib/fetch";
 import ProductsClientWrapper from "@/components/sections/ProductsWrapper";
 import Link from "next/link";
 import Loader from "@/components/ui/Loader";

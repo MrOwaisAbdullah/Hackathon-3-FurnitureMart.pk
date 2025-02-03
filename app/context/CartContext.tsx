@@ -10,6 +10,7 @@ import React, {
 import { CartAction, Products } from "@/typing";
 import { validateCart } from "@/utils/validateCart";
 
+
 // Define the CartState type
 interface CartState {
   cart: Products[];
@@ -17,11 +18,15 @@ interface CartState {
 
 // Define the CartContextValue type
 interface CartContextValue {
-  state: CartState; // state includes cart
+  state: CartState; // State includes cart
   dispatch: React.Dispatch<CartAction>;
   totalItems: number;
   totalPrice: number;
-  validateCartBeforeCheckout: () => Promise<Products[]>;
+  validateCartBeforeCheckout: () => Promise<{
+    success: boolean;
+    message?: string;
+    validatedCart: Products[];
+  }>;
 }
 
 // Cart reducer function
@@ -104,11 +109,51 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     0
   );
 
-  // Validate cart before checkout
-  const validateCartBeforeCheckout = async (): Promise<Products[]> => {
-    const validatedCart = await validateCart(state.cart);
-    dispatch({ type: "SET_CART", cart: validatedCart }); // Update the cart with validated data
-    return validatedCart;
+  const validateCartBeforeCheckout = async (): Promise<{
+    success: boolean;
+    message?: string;
+    validatedCart: Products[];
+  }> => {
+    try {
+      
+      if (!state.cart || state.cart.length === 0) {
+        return {
+          success: false,
+          message: "Your cart is empty",
+          validatedCart: []
+        };
+      }
+  
+      const validatedCart = await validateCart(state.cart);
+  
+      if (!validatedCart || validatedCart.length === 0) {
+        return {
+          success: false,
+          message: "No valid items found in cart",
+          validatedCart: []
+        };
+      }
+  
+      if (validatedCart.length < state.cart.length) {
+        return {
+          success: false,
+          message: "Some items in your cart are no longer available",
+          validatedCart: validatedCart
+        };
+      }
+  
+      return {
+        success: true,
+        validatedCart: validatedCart
+      };
+    } catch (error) {
+      console.error("Error validating cart:", error);
+      return {
+        success: false,
+        message: "Failed to validate cart. Please try again.",
+        validatedCart: []
+      };
+    }
   };
 
   // Sync cart with localStorage

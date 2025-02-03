@@ -3,17 +3,26 @@ import { Products } from "@/typing";
 
 export const validateCart = async (cart: Products[]): Promise<Products[]> => {
   try {
+    // Add logging to debug
+    console.log("Starting cart validation with cart:", cart);
+
+    if (!cart || cart.length === 0) {
+      console.log("Cart is empty");
+      return [];
+    }
+
     // Extract product IDs from the cart
     const productIds = cart.map((item) => item._id);
 
     // Fetch product details from Sanity
-    const products = await client.fetch(
-      `*[_type == "product" && _id in $productIds]{
-        _id,
-        price
-      }`,
-      { productIds }
-    );
+    const query = `*[_type == "products" && _id in $productIds]{
+      _id,
+      price,
+      name,
+      quantity
+    }`;
+    
+    const products = await client.fetch(query, { productIds });
 
     // Validate the cart
     const validatedCart = cart
@@ -22,16 +31,19 @@ export const validateCart = async (cart: Products[]): Promise<Products[]> => {
         if (product) {
           return {
             ...item,
-            price: product.price, // Overwrite price to match the database
+            price: product.price, // Use the price from Sanity
           };
         }
-        return null; // Remove invalid items
+        console.warn(`Product with ID ${item._id} not found in Sanity.`);
+        return null;
       })
-      .filter(Boolean);
+      .filter((item): item is Products => item !== null);
 
-    return validatedCart as Products[];
+    console.log("Validated cart:", validatedCart);
+
+    return validatedCart;
   } catch (error) {
-    console.error("Error validating cart:", error);
-    return cart; // Return the original cart if validation fails
+    console.error("Error in validateCart:", error);
+    throw error; // Throw the error instead of returning the original cart
   }
 };

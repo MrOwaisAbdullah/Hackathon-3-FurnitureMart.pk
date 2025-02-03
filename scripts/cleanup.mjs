@@ -9,11 +9,11 @@ import { createClient } from "@sanity/client";
 const {
   NEXT_PUBLIC_SANITY_PROJECT_ID, // Sanity project ID
   NEXT_PUBLIC_SANITY_DATASET, // Sanity dataset (e.g., "production")
-  NEXT_PUBLIC_SANITY_AUTH_TOKEN, // Sanity API token
+  SANITY_AUTH_TOKEN, // Sanity API token
 } = process.env;
 
 // Check if the required environment variables are provided
-if (!NEXT_PUBLIC_SANITY_PROJECT_ID || !NEXT_PUBLIC_SANITY_AUTH_TOKEN) {
+if (!NEXT_PUBLIC_SANITY_PROJECT_ID || !SANITY_AUTH_TOKEN) {
   console.error("Missing required environment variables. Please check your .env.local file.");
   process.exit(1); // Stop execution if variables are missing
 }

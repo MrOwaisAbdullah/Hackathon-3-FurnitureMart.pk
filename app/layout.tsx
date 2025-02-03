@@ -6,6 +6,7 @@ import { CartProvider } from "./context/CartContext";
 import { NotificationsProvider } from "./context/NotificationContext";
 import { ToastContainer } from "@/components/ui/Toast";
 import { WishlistProvider } from "./context/WishlistContext";
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: "Comforty Furniture Shop",
@@ -20,6 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+      <ClerkProvider
+      afterSignUpUrl="/checkout" // Redirect to checkout after signup
+    >
         <CartProvider>
         <WishlistProvider>
           <NotificationsProvider>
@@ -30,6 +34,7 @@ export default function RootLayout({
           </NotificationsProvider>
           </WishlistProvider>
         </CartProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
