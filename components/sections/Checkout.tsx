@@ -18,6 +18,7 @@ import {
   ShippoParcel,
 } from "@/lib/shippo";
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
+import { CheckoutProgress } from "../ui/ProgressIndicator";
 
 // Load Stripe library
 const stripePromise = loadStripe(
@@ -40,6 +41,8 @@ const Checkout = () => {
   const [selectedShippingRate, setSelectedShippingRate] = useState<
     string | null
   >(null);
+  const [trackingId, setTrackingId] = useState<string | null>(null); // Store tracking ID
+  const [orderId, setOrderId] = useState<string | null>(null); // Store order ID
 
   // Ref to track if shippingDetails has been updated
   const isShippingDetailsUpdated = useRef(false);
@@ -80,7 +83,7 @@ const Checkout = () => {
       }
 
       // Create the order
-      await createOrder({
+      const createdOrder = await createOrder({
         cart: orderDetails.items,
         shipping: shippingDetails,
         payment: {
@@ -92,8 +95,18 @@ const Checkout = () => {
 
       // Create a shipping label
       const label = await createShippingLabel(selectedShippingRate);
-      console.log("Shipping label created:", label.labelUrl);
+      if (!label) {
+        throw new Error("Failed to create shipping label");
+      }
+      console.log("Shipping label created:", label?.labelUrl);
 
+      // Extract tracking ID and order ID
+      const trackingNumber = label?.trackingNumber || "N/A";
+      const orderId = createdOrder?.id || "N/A";
+
+      // Update state with tracking ID and order ID
+      setTrackingId(trackingNumber);
+      setOrderId(orderId);
       // Clear the cart
       dispatch({ type: "CLEAR_CART" });
       setCurrentStep("confirmation");
@@ -284,39 +297,18 @@ const Checkout = () => {
       case "payment":
         return renderPaymentStep();
       case "confirmation":
-        return <ConfirmationPage orderDetails={orderDetails} />;
+        return <ConfirmationPage 
+        orderDetails={orderDetails}             
+        orderId={orderId} 
+        trackingId={trackingId}/>;
       default:
         return null;
     }
   };
 
   return (
-    <div className="px-3">
-      {/* Progress Indicator */}
-      <div className="flex justify-between text-sm font-medium text-gray-500">
-        <span
-          className={currentStep === "details" ? "text-primary font-bold" : ""}
-        >
-          Details
-        </span>
-        <span
-          className={currentStep === "shipping" ? "text-primary font-bold" : ""}
-        >
-          Shipping
-        </span>
-        <span
-          className={currentStep === "payment" ? "text-primary font-bold" : ""}
-        >
-          Payment
-        </span>
-        <span
-          className={
-            currentStep === "confirmation" ? "text-primary font-bold" : ""
-          }
-        >
-          Confirmation
-        </span>
-      </div>
+    <div className="px-3 my-6">
+      <CheckoutProgress currentStep={currentStep} />
 
       {/* Order Summary */}
       {currentStep !== "confirmation" && orderDetails && (

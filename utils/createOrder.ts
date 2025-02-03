@@ -1,18 +1,17 @@
-import { Products, Payments, ShippingDetails, Order } from "@/typing";
+import { Product, Payments, ShippingDetails } from "@/typing";
 
 export const createOrder = async (orderDetails: {
-  cart: Products[];
+  cart: Product[];
   shipping: ShippingDetails;
   tracking?: string;
   payment: Payments;
-}): Promise<Order> => {
+}): Promise<{ id: string }> => {
   // Simulate API call to create an order
   return new Promise((resolve) => {
-    setTimeout(() => {
       resolve({
-        id: "order_12345", // Mock order ID
+        id: `order_${Date.now()}`, // Generate a unique order ID
         ...orderDetails,
       });
-    }, 1000); // Simulate a 1-second delay
+
   });
 };

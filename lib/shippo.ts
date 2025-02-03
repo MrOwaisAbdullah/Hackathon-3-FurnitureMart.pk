@@ -45,18 +45,20 @@ export const getShippingRates = async (
 };
 
 // Create a shipping label
-export const createShippingLabel = async (rateId: string) => {
+export const createShippingLabel = async (selectedRate: string) => {
   try {
     const transaction = await shippo.transactions.create({
-      rate: rateId,
-      labelFileType: "PDF", // or "PNG"
-      async: false, // Set to true for asynchronous requests
+      rate: selectedRate,
+      labelFileType: "PDF",
     });
 
-    return transaction;
+    return {
+      trackingNumber: transaction.trackingNumber || "N/A", // Extract tracking number
+      labelUrl: transaction.labelUrl || "N/A", // Extract label URL
+    };
   } catch (error) {
     console.error("Error creating shipping label:", error);
-    throw error;
+    return null;
   }
 };
 
