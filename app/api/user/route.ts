@@ -1,5 +1,14 @@
 import { client } from "@/sanity/lib/client";
 import { NextResponse } from "next/server";
+import { nanoid } from 'nanoid';
+
+// Helper function to add keys to array items
+function addKeysToArrayItems<T extends object>(items: T[]): (T & { _key: string })[] {
+  return items.map(item => ({
+    ...item,
+    _key: nanoid() // Generates a unique key for each array item
+  }));
+}
 
 // GET request handler
 export async function GET(request: Request) {
@@ -64,19 +73,30 @@ export async function POST(request: Request) {
     if (existingUser) {
       console.log("Updating existing user:", existingUser._id);
 
-      // Prepare historical data
+      // Prepare historical data with keys
       const addressHistory = existingUser.addressHistory || [];
       const previousPhones = existingUser.previousPhones || [];
       const previousEmails = existingUser.previousEmails || [];
 
       if (JSON.stringify(existingUser.address) !== JSON.stringify(address)) {
-        addressHistory.push(existingUser.address);
+        addressHistory.push({
+          ...existingUser.address,
+          _key: nanoid()
+        });
       }
+
       if (existingUser.mobile !== mobile) {
-        previousPhones.push(existingUser.mobile);
+        previousPhones.push({
+          value: existingUser.mobile,
+          _key: nanoid()
+        });
       }
+
       if (existingUser.email !== email) {
-        previousEmails.push(existingUser.email);
+        previousEmails.push({
+          value: existingUser.email,
+          _key: nanoid()
+        });
       }
 
       // Update existing user
@@ -88,9 +108,17 @@ export async function POST(request: Request) {
           email,
           mobile,
           address,
-          addressHistory,
-          previousPhones,
-          previousEmails,
+          addressHistory: addKeysToArrayItems(addressHistory),
+          previousPhones: previousPhones.map((phone: { value: string; _key: string } | string) => 
+            typeof phone === 'string' 
+              ? { value: phone, _key: nanoid() }
+              : phone
+          ),
+          previousEmails: previousEmails.map((email: { value: string; _key: string } | string)=> 
+            typeof email === 'string' 
+              ? { value: email, _key: nanoid() }
+              : email
+          ),
         })
         .commit();
 
@@ -99,7 +127,7 @@ export async function POST(request: Request) {
     } else {
       console.log("Creating new user...");
 
-      // Create new user
+      // Create new user with empty arrays (they'll have keys when items are added)
       const newUser = await client.create({
         _type: "user",
         clerkId,

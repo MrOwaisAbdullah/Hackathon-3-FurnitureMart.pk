@@ -112,13 +112,31 @@ export const userSchema = defineType({
       name: 'previousPhones',
       type: 'array',
       title: 'Previous Phone Numbers',
-      of: [{ type: 'string' }],
+      of: [{ 
+        type: 'object',
+        fields: [
+          {
+            name: 'value',
+            type: 'string',
+            title: 'Phone Number'
+          }
+        ]
+      }],
     }),
     defineField({
       name: 'previousEmails',
       type: 'array',
       title: 'Previous Emails',
-      of: [{ type: 'string' }],
+      of: [{ 
+        type: 'object',
+        fields: [
+          {
+            name: 'value',
+            type: 'string',
+            title: 'Email'
+          }
+        ]
+      }],
     }),
   ],
 });
