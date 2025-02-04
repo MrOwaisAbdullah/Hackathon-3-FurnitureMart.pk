@@ -30,7 +30,7 @@ export function CheckoutProgress({
         <div className="relative py-8">
           {/* Progress Line */}
           <div
-            className="absolute left-4 top-[38%] h-1 w-[95%] -translate-y-1/3 bg-muted"
+            className="absolute left-4 top-[38%] h-1 w-[92%] lg:w-[95%] -translate-y-1/3 bg-muted"
             aria-hidden="true"
           >
             <div

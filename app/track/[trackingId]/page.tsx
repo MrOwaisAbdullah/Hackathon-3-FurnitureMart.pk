@@ -1,8 +1,7 @@
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import TrackOrder from "@/components/sections/TrackOrder";
 
 const TrackingPage = () => {
-  const router = useRouter();
   const { trackingId } = router.query;
 
   if (!trackingId) {
