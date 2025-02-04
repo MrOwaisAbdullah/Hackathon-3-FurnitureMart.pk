@@ -6,11 +6,11 @@ export const orderSchema = defineType({
   type: "document",
   fields: [
     defineField({
-      name: "customer",
-      title: "Customer",
-      type: "reference",
-      to: [{ type: "user" }], // Reference to the user schema
-      description: "The customer who placed the order.",
+      name: 'customer',
+      title: 'Customer',
+      type: 'reference',
+      to: [{ type: 'user' }], // Reference to the user schema
+      description: 'The customer who placed the order.',
     }),
     defineField({
       name: "products",

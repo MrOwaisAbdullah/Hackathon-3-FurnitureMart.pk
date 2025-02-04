@@ -6,7 +6,7 @@ import { useNotifications } from "@/app/context/NotificationContext";
 import PaymentForm from "@/components/ui/PaymentForm";
 import { createOrder } from "@/utils/createOrder";
 import { Product, ShippingDetails, ShippoRateDisplay } from "@/typing";
-import { Rate as ShippoApiRates} from "shippo";
+import { Rate as ShippoApiRates } from "shippo";
 import ConfirmationPage from "./ConfirmationPage";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -19,6 +19,9 @@ import {
 } from "@/lib/shippo";
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
 import { CheckoutProgress } from "../ui/ProgressIndicator";
+import { useUser } from "@clerk/nextjs";
+import { saveUser } from "@/utils/userUtils";
+import { useUserSync } from "@/hooks/useUserSync";
 
 // Load Stripe library
 const stripePromise = loadStripe(
@@ -43,6 +46,19 @@ const Checkout = () => {
   >(null);
   const [trackingId, setTrackingId] = useState<string | null>(null); // Store tracking ID
   const [orderId, setOrderId] = useState<string | null>(null); // Store order ID
+  const { user } = useUser();
+
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      // Get address from user's public metadata
+      const userMetadata = user.publicMetadata;
+      if (userMetadata && "address" in userMetadata) {
+        setShippingDetails(userMetadata.address as ShippingDetails);
+      }
+    }
+  }, [user]);
 
   // Ref to track if shippingDetails has been updated
   const isShippingDetailsUpdated = useRef(false);
@@ -74,15 +90,69 @@ const Checkout = () => {
     }
   }, [shippingDetails, orderDetails]);
 
+  // Safely destructure syncUser and isLoading
+  const userSyncResult = useUserSync();
+  const { syncUser, isLoading: isSyncingUser } = userSyncResult || {
+    syncUser: () => Promise.resolve(false),
+    isLoading: false,
+  };
+
   const handlePaymentSuccess = async () => {
+    if (
+      !shippingDetails ||
+      !shippingDetails.name ||
+      !shippingDetails.email ||
+      !shippingDetails.mobile ||
+      !shippingDetails.address ||
+      !shippingDetails.city ||
+      !shippingDetails.postalCode ||
+      !shippingDetails.country
+    ) {
+      // console.error("Invalid shipping details:", shippingDetails);
+      addNotification(
+        "Please fill out all required shipping details.",
+        "error"
+      );
+      return;
+    }
+
+    // console.log("Shipping details being synced:", shippingDetails);
+    setIsProcessing(true);
+
     try {
-      if (!orderDetails || !shippingDetails || !selectedShippingRate) {
-        throw new Error(
-          "Order details, shipping details, or shipping rate not found"
-        );
+      if (user) {
+        try {
+          await saveUser({
+            clerkId: user.id,
+            name: shippingDetails.name,
+            email: shippingDetails.email,
+            mobile: shippingDetails.mobile,
+            address: {
+              street: shippingDetails.address,
+              city: shippingDetails.city,
+              state: shippingDetails.state ?? "",
+              postalCode: shippingDetails.postalCode,
+              country: shippingDetails.country,
+            },
+          });
+        } catch (error) {
+          console.error("Error saving user:", error);
+        }
       }
 
-      // Create the order
+      // Try to sync user but continue regardless
+      if (syncUser) {
+        try {
+          await syncUser(shippingDetails);
+        } catch (error) {
+          console.error("Error syncing user:", error);
+        }
+      }
+
+      if (!orderDetails || !shippingDetails || !selectedShippingRate) {
+        throw new Error("Missing required order information");
+      }
+
       const createdOrder = await createOrder({
         cart: orderDetails.items,
         shipping: shippingDetails,
@@ -93,23 +163,22 @@ const Checkout = () => {
         },
       });
 
-      // Create a shipping label
+      // console.log("Order created successfully. Creating shipping label...");
       const label = await createShippingLabel(selectedShippingRate);
+
       if (!label) {
         throw new Error("Failed to create shipping label");
       }
-      console.log("Shipping label created:", label?.labelUrl);
 
-      // Extract tracking ID and order ID
+      // console.log("Shipping label created:", label?.labelUrl);
       const trackingNumber = label?.trackingNumber || "N/A";
       const orderId = createdOrder?.id || "N/A";
 
-      // Update state with tracking ID and order ID
       setTrackingId(trackingNumber);
       setOrderId(orderId);
-      // Clear the cart
       dispatch({ type: "CLEAR_CART" });
       setCurrentStep("confirmation");
+
       addNotification(
         "Payment successful! Your order has been placed.",
         "success"
@@ -117,6 +186,8 @@ const Checkout = () => {
     } catch (error) {
       console.error("Error creating order or shipping label:", error);
       addNotification("Failed to create order. Please try again.", "error");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -135,33 +206,35 @@ const Checkout = () => {
     );
   };
 
-  const transformShippoRates = (rates: ShippoApiRates[]): ShippoRateDisplay[] => {
-    return rates.map(rate => ({
+  const transformShippoRates = (
+    rates: ShippoApiRates[]
+  ): ShippoRateDisplay[] => {
+    return rates.map((rate) => ({
       objectId: rate.objectId,
       provider: rate.provider,
       servicelevel: {
-        name: rate.servicelevel?.name || 'Standard Shipping'
+        name: rate.servicelevel?.name || "Standard Shipping",
       },
-      amount: rate.amount ? rate.amount.toString() : '0',
+      amount: rate.amount ? rate.amount.toString() : "0",
       currency: rate.currency,
       transit_days: rate.estimatedDays || 0,
-      estimated_days: rate.estimatedDays || 0
+      estimated_days: rate.estimatedDays || 0,
     }));
   };
 
   const fetchShippingRates = async () => {
-    console.log('Starting fetchShippingRates...');
-    console.log('Current shippingDetails:', shippingDetails);
-    console.log('Current orderDetails:', orderDetails);
+    console.log("Starting fetchShippingRates...");
+    console.log("Current shippingDetails:", shippingDetails);
+    console.log("Current orderDetails:", orderDetails);
 
     if (!shippingDetails || !orderDetails) {
-      console.log('Missing required details, aborting.');
+      console.log("Missing required details, aborting.");
       return;
     }
 
     try {
       const addressFrom: ShippoAddress = {
-        name: "Your Store Name",
+        name: "FurnitureMart.pk",
         street1: "123 Main St",
         city: "San Francisco",
         state: "CA",
@@ -178,47 +251,34 @@ const Checkout = () => {
         state: shippingDetails.state || "N/A",
         zip: shippingDetails.postalCode,
         country: shippingDetails.country,
-        phone: "555-555-5555",
+        phone: shippingDetails.mobile,
         email: shippingDetails.email,
       };
 
-      console.log('AddressFrom:', addressFrom);
-      console.log('AddressTo:', addressTo);
-
-      const totalWeight = orderDetails.items
-        .reduce((sum, item) => {
-          console.log(`Item weight for ${item.title}:`, item.weight || 1);
-          return sum + (item.weight || 1);
-        }, 0)
-        .toString();
-
-      console.log('Calculated total weight:', totalWeight);
+      const totalWeight = orderDetails.items.reduce((sum, item) => {
+        console.log(`Item weight for ${item.title}:`, item.weight || 1);
+        return sum + (item.weight || 1);
+      }, 0);
 
       const parcel: ShippoParcel = {
         length: "10",
         width: "8",
         height: "4",
         distanceUnit: DistanceUnitEnum.In,
-        weight: totalWeight,
+        weight: totalWeight.toString(),
         massUnit: WeightUnitEnum.Lb,
       };
 
-      console.log('Parcel details:', parcel);
-      console.log('Calling getShippingRates with the above parameters...');
-
       const rates = await getShippingRates(addressFrom, addressTo, parcel);
-      console.log('Received rates from API:', rates);
-
       const transformedRates = transformShippoRates(rates);
-      console.log('Transformed rates:', transformedRates);
 
+      // Update shipping rates without modifying shippingDetails or orderDetails
       setShippingRates(transformedRates);
-      console.log('Updated shipping rates state');
     } catch (error) {
       console.error("Detailed error in fetchShippingRates:", {
         error,
-        message: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined
+        message: error instanceof Error ? error.message : "Unknown error",
+        stack: error instanceof Error ? error.stack : undefined,
       });
       addNotification(
         "Failed to fetch shipping rates. Please try again.",
@@ -228,9 +288,9 @@ const Checkout = () => {
   };
 
   const renderShippingRates = () => {
-    console.log('renderShippingRates called with:', {
+    console.log("renderShippingRates called with:", {
       ratesLength: shippingRates.length,
-      currentRates: shippingRates
+      currentRates: shippingRates,
     });
 
     if (shippingRates.length === 0) {
@@ -260,7 +320,9 @@ const Checkout = () => {
           >
             <div className="font-bold">{rate.provider}</div>
             <div>{rate.servicelevel.name}</div>
-            <div className="font-medium">${parseFloat(rate.amount).toFixed(2)} {rate.currency}</div>
+            <div className="font-medium">
+              ${parseFloat(rate.amount).toFixed(2)} {rate.currency}
+            </div>
             {rate.transit_days > 0 && (
               <div className="text-sm text-gray-600">
                 Estimated delivery: {rate.transit_days} days
@@ -297,15 +359,32 @@ const Checkout = () => {
       case "payment":
         return renderPaymentStep();
       case "confirmation":
-        return <ConfirmationPage 
-        orderDetails={orderDetails}             
-        orderId={orderId} 
-        trackingId={trackingId}/>;
+        return (
+          <ConfirmationPage
+            orderDetails={orderDetails}
+            orderId={orderId}
+            trackingId={trackingId}
+          />
+        );
       default:
         return null;
     }
   };
 
+  // Show loading state during sync or processing
+  if (isProcessing || isSyncingUser) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-lg">Processing your order...</p>
+          <p className="text-sm text-gray-500">
+            Please don&apos;t close this window
+          </p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="px-3 my-6">
       <CheckoutProgress currentStep={currentStep} />

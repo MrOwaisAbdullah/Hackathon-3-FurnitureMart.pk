@@ -11,6 +11,10 @@ import { Product } from "@/typing";
 const shippingDetailsSchema = z.object({
   name: z.string().min(1, "Full name is required"),
   email: z.string().email("Invalid email address"),
+  mobile: z
+    .string()
+    .min(11, "Mobile number must be at least 11 digits")
+    .max(13, "Mobile number is too long"),
   address: z.string().min(1, "Address is required"),
   city: z.string().min(1, "City is required"),
   postalCode: z.string().min(1, "Postal code is required"),
@@ -30,6 +34,7 @@ const ShippingForm = ({ onSuccess, setOrderDetails }: ShippingFormProps) => {
   const [shippingDetails, setShippingDetails] = useState<ShippingDetails>({
     name: "",
     email: "",
+    mobile: "",
     address: "",
     city: "",
     postalCode: "",
@@ -49,7 +54,8 @@ const ShippingForm = ({ onSuccess, setOrderDetails }: ShippingFormProps) => {
 
       if (!validationResult.success) {
         addNotification(
-          validationResult.message || "Failed to validate your cart. Please try again.",
+          validationResult.message ||
+            "Failed to validate your cart. Please try again.",
           "error"
         );
         return;
@@ -58,7 +64,10 @@ const ShippingForm = ({ onSuccess, setOrderDetails }: ShippingFormProps) => {
       const { validatedCart } = validationResult;
 
       if (validatedCart.length === 0) {
-        addNotification("Your cart appears to be empty. Please add items before checking out.", "error");
+        addNotification(
+          "Your cart appears to be empty. Please add items before checking out.",
+          "error"
+        );
         return;
       }
 
@@ -87,7 +96,10 @@ const ShippingForm = ({ onSuccess, setOrderDetails }: ShippingFormProps) => {
         setErrors(fieldErrors);
         addNotification("Please fix the errors in the form.", "error");
       } else {
-        addNotification("An unexpected error occurred. Please try again.", "error");
+        addNotification(
+          "An unexpected error occurred. Please try again.",
+          "error"
+        );
       }
     } finally {
       setIsProcessing(false);
@@ -114,6 +126,7 @@ const ShippingForm = ({ onSuccess, setOrderDetails }: ShippingFormProps) => {
             setShippingDetails({ ...shippingDetails, name: e.target.value })
           }
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-[6px] shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+          placeholder="e.g., John Doe"
         />
         {errors.name && (
           <p className="text-red-500 text-xs mt-1">{errors.name}</p>
@@ -136,9 +149,33 @@ const ShippingForm = ({ onSuccess, setOrderDetails }: ShippingFormProps) => {
             setShippingDetails({ ...shippingDetails, email: e.target.value })
           }
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-[6px] shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+          placeholder="e.g., john.doe@example.com"
         />
         {errors.email && (
           <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+        )}
+      </div>
+
+      {/* Mobile Number - New Field */}
+      <div>
+        <label
+          htmlFor="mobile"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Mobile Number
+        </label>
+        <input
+          id="mobile"
+          type="tel"
+          value={shippingDetails.mobile}
+          onChange={(e) =>
+            setShippingDetails({ ...shippingDetails, mobile: e.target.value })
+          }
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-[6px] shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+          placeholder="e.g., +923456789087"
+        />
+        {errors.mobile && (
+          <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>
         )}
       </div>
 
@@ -158,6 +195,7 @@ const ShippingForm = ({ onSuccess, setOrderDetails }: ShippingFormProps) => {
             setShippingDetails({ ...shippingDetails, address: e.target.value })
           }
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-[6px] shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+          placeholder="e.g., 123 Main St, Apt 4B"
         />
         {errors.address && (
           <p className="text-red-500 text-xs mt-1">{errors.address}</p>
@@ -180,6 +218,7 @@ const ShippingForm = ({ onSuccess, setOrderDetails }: ShippingFormProps) => {
             setShippingDetails({ ...shippingDetails, city: e.target.value })
           }
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-[6px] shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+          placeholder="e.g., New York"
         />
         {errors.city && (
           <p className="text-red-500 text-xs mt-1">{errors.city}</p>
@@ -205,6 +244,7 @@ const ShippingForm = ({ onSuccess, setOrderDetails }: ShippingFormProps) => {
             })
           }
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-[6px] shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+          placeholder="e.g., 10001"
         />
         {errors.postalCode && (
           <p className="text-red-500 text-xs mt-1">{errors.postalCode}</p>
@@ -227,6 +267,7 @@ const ShippingForm = ({ onSuccess, setOrderDetails }: ShippingFormProps) => {
             setShippingDetails({ ...shippingDetails, country: e.target.value })
           }
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-[6px] shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+          placeholder="e.g., United States"
         />
         {errors.country && (
           <p className="text-red-500 text-xs mt-1">{errors.country}</p>

@@ -6,10 +6,9 @@ export const createOrder = async (orderDetails: {
   tracking?: string;
   payment: Payments;
 }): Promise<{ id: string }> => {
-  // Simulate API call to create an order
   return new Promise((resolve) => {
       resolve({
-        id: `order_${Date.now()}`, // Generate a unique order ID
+        id: `order${Math.random().toString(36).substr(2, 9)}`, // Generate a unique order ID
         ...orderDetails,
       });
 
