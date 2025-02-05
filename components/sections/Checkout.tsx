@@ -139,6 +139,7 @@ const totalQuantity = calculateTotalQuantity();
       );
       return;
     }
+    setIsProcessing(true);
 
 
     try {
@@ -150,7 +151,6 @@ const totalQuantity = calculateTotalQuantity();
         if (!sanityUserId) {
           throw new Error("User not found in Sanity.");
         }
-        setIsProcessing(true);
         // Save or update user data in Sanity
         await saveUser({
           clerkId: user.id,
