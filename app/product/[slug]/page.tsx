@@ -30,7 +30,8 @@ const Page = ({ params: { slug } }: { params: { slug: string } }) => {
           "isDiscounted": priceWithoutDiscount > 0,
           "isNew": createdAt > now() - 30 * 24 * 60 * 60 * 1000,
           category->{title},
-          tags
+          tags,
+          seller->{_id, name}
         }`;
         const productData = await client.fetch(productQuery);
         setProduct(productData);

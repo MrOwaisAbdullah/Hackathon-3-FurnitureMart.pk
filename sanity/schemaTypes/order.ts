@@ -6,11 +6,25 @@ export const orderSchema = defineType({
   type: "document",
   fields: [
     defineField({
-      name: 'customer',
-      title: 'Customer',
-      type: 'reference',
-      to: [{ type: 'user' }], // Reference to the user schema
-      description: 'The customer who placed the order.',
+      name: "orderId",
+      title: "Order ID",
+      type: "string",
+      description: "A unique identifier for the order.",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "customer",
+      title: "Customer",
+      type: "reference",
+      to: [{ type: "user" }], // Reference to the user schema
+      description: "The customer who placed the order.",
+    }),
+    defineField({
+      name: "seller",
+      title: "Seller",
+      type: "reference",
+      to: [{ type: "seller" }], // Reference to the seller schema
+      description: "The seller associated with this order.",
     }),
     defineField({
       name: "products",

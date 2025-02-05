@@ -37,6 +37,7 @@ const SingleProduct = ({ product }: { product: Products }) => {
           image: product.image ? urlFor(product.image).url() : null,
           quantity: quantity,
           slug: { current: product?.slug?.current || "" },
+          seller: product.seller,
         },
       });
       // Trigger a success notification

@@ -12,6 +12,8 @@ interface Products {
     current: string;
   }
   quantity?: number; 
+  seller?: { _id: string };
+  weight?: number;
 }
 
 interface ProductCards {
@@ -48,6 +50,7 @@ interface Product {
     current: string ;
   };
   weight?: number;
+  seller?: { _id: string };
 }
 
 interface CartState {

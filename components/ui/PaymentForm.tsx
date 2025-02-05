@@ -1,4 +1,4 @@
-"use client";
+// components/ui/PaymentForm.tsx
 import React, { useState } from "react";
 import {
   CardNumberElement,
@@ -9,7 +9,7 @@ import {
 } from "@stripe/react-stripe-js";
 
 interface Props {
-  amount: number;
+  amount: number; // Total amount (product total + shipping cost)
   onPaymentSuccess: () => void;
 }
 
@@ -169,7 +169,7 @@ const PaymentForm = ({ amount, onPaymentSuccess }: Props) => {
       <button
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full bg-primary text-white py-3 rounded-lg hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-primary text-white py-3 rounded hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isProcessing ? "Processing..." : `Pay $${amount.toFixed(2)}`}
       </button>

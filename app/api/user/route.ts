@@ -71,7 +71,7 @@ export async function POST(request: Request) {
     const existingUser = existingUserByMobile || existingUserByClerkId;
 
     if (existingUser) {
-      console.log("Updating existing user:", existingUser._id);
+      // console.log("Updating existing user:", existingUser._id);
 
       // Prepare historical data with keys
       const addressHistory = existingUser.addressHistory || [];
@@ -122,7 +122,7 @@ export async function POST(request: Request) {
         })
         .commit();
 
-      console.log("User updated successfully:", updatedUser);
+      // console.log("User updated successfully:", updatedUser);
       return NextResponse.json({ user: updatedUser }, { status: 200 });
     } else {
       console.log("Creating new user...");
@@ -140,7 +140,7 @@ export async function POST(request: Request) {
         previousEmails: [],
       });
 
-      console.log("New user created successfully:", newUser);
+      console.log("New user created successfully");
       return NextResponse.json({ user: newUser }, { status: 201 });
     }
   } catch (error) {

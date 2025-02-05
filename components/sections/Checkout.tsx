@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useCart } from "@/app/context/CartContext";
 import { useNotifications } from "@/app/context/NotificationContext";
 import PaymentForm from "@/components/ui/PaymentForm";
-import { createOrder } from "@/utils/createOrder";
 import { Product, ShippingDetails, ShippoRateDisplay } from "@/typing";
 import { Rate as ShippoApiRates } from "shippo";
 import ConfirmationPage from "./ConfirmationPage";
@@ -20,8 +19,9 @@ import {
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
 import { CheckoutProgress } from "../ui/ProgressIndicator";
 import { useUser } from "@clerk/nextjs";
-import { saveUser } from "@/utils/userUtils";
+import { getSanityUserIdByClerkId, saveUser } from "@/utils/userUtils";
 import { useUserSync } from "@/hooks/useUserSync";
+import { groupCartItemsBySeller } from "@/utils/groupCartItems";
 
 // Load Stripe library
 const stripePromise = loadStripe(
@@ -47,6 +47,22 @@ const Checkout = () => {
   const [trackingId, setTrackingId] = useState<string | null>(null); // Store tracking ID
   const [orderId, setOrderId] = useState<string | null>(null); // Store order ID
   const { user } = useUser();
+  const [shippingCost, setShippingCost] = useState<number>(0);
+
+  // Update shipping cost when a rate is selected
+  useEffect(() => {
+    if (selectedShippingRate) {
+      const selectedRate = shippingRates.find(
+        (rate) => rate.objectId === selectedShippingRate
+      );
+      if (selectedRate) {
+        setShippingCost(parseFloat(selectedRate.amount));
+      }
+    }
+  }, [selectedShippingRate, shippingRates]);
+
+  // Calculate total amount (product total + shipping cost)
+  const totalAmount = orderDetails ? orderDetails.total + shippingCost : 0;
 
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -97,7 +113,16 @@ const Checkout = () => {
     isLoading: false,
   };
 
+  // Checkout.tsx
+const calculateTotalQuantity = useCallback(() => {
+  return state.cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+}, [state.cart]);
+
+// Use this function to get the total quantity
+const totalQuantity = calculateTotalQuantity();
+
   const handlePaymentSuccess = async () => {
+    // Validate shipping details
     if (
       !shippingDetails ||
       !shippingDetails.name ||
@@ -108,7 +133,6 @@ const Checkout = () => {
       !shippingDetails.postalCode ||
       !shippingDetails.country
     ) {
-      // console.error("Invalid shipping details:", shippingDetails);
       addNotification(
         "Please fill out all required shipping details.",
         "error"
@@ -116,69 +140,95 @@ const Checkout = () => {
       return;
     }
 
-    // console.log("Shipping details being synced:", shippingDetails);
-    setIsProcessing(true);
 
     try {
+      let sanityUserId: string | undefined;
+
       if (user) {
-        try {
-          await saveUser({
-            clerkId: user.id,
-            name: shippingDetails.name,
-            email: shippingDetails.email,
-            mobile: shippingDetails.mobile,
-            address: {
-              street: shippingDetails.address,
-              city: shippingDetails.city,
-              state: shippingDetails.state ?? "",
-              postalCode: shippingDetails.postalCode,
-              country: shippingDetails.country,
-            },
-          });
-        } catch (error) {
-          console.error("Error saving user:", error);
+        // Fetch the Sanity user ID using the Clerk ID
+        sanityUserId = (await getSanityUserIdByClerkId(user.id)) ?? undefined;
+        if (!sanityUserId) {
+          throw new Error("User not found in Sanity.");
         }
+        setIsProcessing(true);
+        // Save or update user data in Sanity
+        await saveUser({
+          clerkId: user.id,
+          name: shippingDetails.name,
+          email: shippingDetails.email,
+          mobile: shippingDetails.mobile,
+          address: {
+            street: shippingDetails.address,
+            city: shippingDetails.city,
+            state: shippingDetails.state || "",
+            postalCode: shippingDetails.postalCode,
+            country: shippingDetails.country,
+          },
+        });
       }
 
-      // Try to sync user but continue regardless
-      if (syncUser) {
-        try {
-          await syncUser(shippingDetails);
-        } catch (error) {
-          console.error("Error syncing user:", error);
+      // Group cart items by seller
+      const groupedItems = groupCartItemsBySeller(orderDetails?.items ?? []);
+
+      for (const [sellerId, sellerItems] of Object.entries(groupedItems)) {
+        const sellerTotal = sellerItems.reduce(
+          (sum, item) => sum + item.price * (item.quantity || 1),
+          0
+        );
+
+        const userSynced = await syncUser(shippingDetails);
+        if (!userSynced) {
+          console.error("Failed to sync user data. Please try again.");
+          continue; // Skip to the next seller
         }
+
+        const paymentDetails = {
+          paymentMethod: "credit_card",
+          amountPaid: sellerTotal,
+          transactionId: "txn_123456789",
+        };
+
+        const response = await fetch("/api/create-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            cart: sellerItems,
+            shipping: shippingDetails,
+            payment: paymentDetails,
+            customerId: sanityUserId, // Use Sanity user ID
+            sellerId,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to create order");
+        }
+
+        const createdOrder = await response.json();
+        console.log("Order created successfully:", createdOrder);
+
+        // Create the shipping label for this seller's order
+        const label = await createShippingLabel(selectedShippingRate || "");
+        if (!label) {
+          throw new Error("Failed to create shipping label");
+        }
+
+        console.log("Shipping label created:", label?.labelUrl);
+
+        // Extract tracking number and order ID
+        const trackingNumber = label?.trackingNumber || "N/A";
+        const orderId = createdOrder?.id || "N/A";
+
+        setTrackingId(trackingNumber);
+        setOrderId(orderId);
       }
-
-      if (!orderDetails || !shippingDetails || !selectedShippingRate) {
-        throw new Error("Missing required order information");
-      }
-
-      const createdOrder = await createOrder({
-        cart: orderDetails.items,
-        shipping: shippingDetails,
-        payment: {
-          cardNumber: "**** **** **** ****",
-          expiryDate: "**/**",
-          cvv: "***",
-        },
-      });
-
-      // console.log("Order created successfully. Creating shipping label...");
-      const label = await createShippingLabel(selectedShippingRate);
-
-      if (!label) {
-        throw new Error("Failed to create shipping label");
-      }
-
-      // console.log("Shipping label created:", label?.labelUrl);
-      const trackingNumber = label?.trackingNumber || "N/A";
-      const orderId = createdOrder?.id || "N/A";
-
-      setTrackingId(trackingNumber);
-      setOrderId(orderId);
+            setIsProcessing(false);
+      // Clear the cart and move to confirmation
       dispatch({ type: "CLEAR_CART" });
       setCurrentStep("confirmation");
-
       addNotification(
         "Payment successful! Your order has been placed.",
         "success"
@@ -199,7 +249,7 @@ const Checkout = () => {
     return (
       <Elements stripe={stripePromise}>
         <PaymentForm
-          amount={orderDetails.total}
+          amount={totalAmount}
           onPaymentSuccess={handlePaymentSuccess}
         />
       </Elements>
@@ -361,9 +411,10 @@ const Checkout = () => {
       case "confirmation":
         return (
           <ConfirmationPage
-            orderDetails={orderDetails}
-            orderId={orderId}
-            trackingId={trackingId}
+          orderDetails={orderDetails}
+          orderId={orderId}
+          trackingId={trackingId}
+          shippingCost={shippingCost}
           />
         );
       default:
@@ -394,8 +445,12 @@ const Checkout = () => {
         <div className="mt-8 mb-5 p-6 bg-gray-100 rounded-lg">
           <h3 className="text-lg font-bold mb-4">Order Summary</h3>
           <div className="space-y-2">
-            <div>Items: {orderDetails.items.length}</div>
-            <div>Total: ${orderDetails.total.toFixed(2)}</div>
+            <div>Items: {totalQuantity}</div>
+            <div>Product Total: ${orderDetails.total.toFixed(2)}</div>
+            <div>Shipping Cost: ${shippingCost.toFixed(2)}</div>
+            <div className="font-semibold border-t pt-2">
+              Total Amount: ${totalAmount.toFixed(2)}
+            </div>
           </div>
         </div>
       )}

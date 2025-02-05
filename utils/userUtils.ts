@@ -19,12 +19,13 @@ export interface UserData {
   previousEmails?: string[];
 }
 
+import { client } from "@/sanity/lib/client";
 import { ShippingDetails } from "@/typing";
 import { UserResource } from "@clerk/types";
 
 export async function saveUser(userData: UserData) {
   try {
-    console.log("Saving user data to Sanity:", userData);
+    // console.log("Saving user data to Sanity:", userData);
 
     const response = await fetch('/api/user', {
       method: 'POST',
@@ -58,6 +59,19 @@ export async function getUserByClerkId(clerkId: string) {
     return await response.json();
   } catch (error) {
     console.error('Error fetching user:', error);
+    throw error;
+  }
+}
+
+export async function getSanityUserIdByClerkId(clerkId: string): Promise<string | null> {
+  try {
+    const user = await client.fetch(
+      `*[_type == "user" && clerkId == $clerkId][0]`,
+      { clerkId }
+    );
+    return user?._id || null;
+  } catch (error) {
+    console.error("Error fetching Sanity user ID:", error);
     throw error;
   }
 }

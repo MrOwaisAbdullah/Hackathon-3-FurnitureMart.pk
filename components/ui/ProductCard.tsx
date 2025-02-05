@@ -24,6 +24,7 @@ const ProductCard = ({ product }: { product: ProductCards }) => {
           image: product.image ? urlFor(product.image).url() : null,
           quantity: 1, // Default quantity is 1
           slug: { current: product.slug.current || "" },
+          seller: product.seller,
         },
       });
       addNotification("Added to cart successfully!", "success");
