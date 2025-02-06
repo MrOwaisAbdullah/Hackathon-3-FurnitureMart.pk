@@ -114,12 +114,12 @@ const Checkout = () => {
   };
 
   // Checkout.tsx
-const calculateTotalQuantity = useCallback(() => {
-  return state.cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-}, [state.cart]);
+  const calculateTotalQuantity = useCallback(() => {
+    return state.cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  }, [state.cart]);
 
-// Use this function to get the total quantity
-const totalQuantity = calculateTotalQuantity();
+  // Use this function to get the total quantity
+  const totalQuantity = calculateTotalQuantity();
 
   const handlePaymentSuccess = async () => {
     // Validate shipping details
@@ -140,7 +140,6 @@ const totalQuantity = calculateTotalQuantity();
       return;
     }
     setIsProcessing(true);
-
 
     try {
       let sanityUserId: string | undefined;
@@ -170,62 +169,63 @@ const totalQuantity = calculateTotalQuantity();
       // Group cart items by seller
       const groupedItems = groupCartItemsBySeller(orderDetails?.items ?? []);
 
-      for (const [sellerId, sellerItems] of Object.entries(groupedItems)) {
-        const sellerTotal = sellerItems.reduce(
-          (sum, item) => sum + item.price * (item.quantity || 1),
-          0
-        );
+      // Extract all unique seller IDs
+      const allSellerIds = Object.keys(groupedItems);
 
-        const userSynced = await syncUser(shippingDetails);
-        if (!userSynced) {
-          console.error("Failed to sync user data. Please try again.");
-          continue; // Skip to the next seller
-        }
+      // Process the entire order for all sellers
+      const totalAmount = orderDetails?.total || 0;
 
-        const paymentDetails = {
-          paymentMethod: "credit_card",
-          amountPaid: sellerTotal,
-          transactionId: "txn_123456789",
-        };
-
-        const response = await fetch("/api/create-order", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            cart: sellerItems,
-            shipping: shippingDetails,
-            payment: paymentDetails,
-            customerId: sanityUserId, // Use Sanity user ID
-            sellerId,
-          }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to create order");
-        }
-
-        const createdOrder = await response.json();
-        console.log("Order created successfully:", createdOrder);
-
-        // Create the shipping label for this seller's order
-        const label = await createShippingLabel(selectedShippingRate || "");
-        if (!label) {
-          throw new Error("Failed to create shipping label");
-        }
-
-        console.log("Shipping label created:", label?.labelUrl);
-
-        // Extract tracking number and order ID
-        const trackingNumber = label?.trackingNumber || "N/A";
-        const orderId = createdOrder?.id || "N/A";
-
-        setTrackingId(trackingNumber);
-        setOrderId(orderId);
+      // Sync user data with Clerk
+      const userSynced = await syncUser(shippingDetails);
+      if (!userSynced) {
+        console.error("Failed to sync user data. Please try again.");
+        return;
       }
-            setIsProcessing(false);
+
+      const paymentDetails = {
+        paymentMethod: "credit_card",
+        amountPaid: totalAmount, // Total amount paid for the entire order
+        transactionId: "txn_123456789",
+      };
+
+      const response = await fetch("/api/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cart: orderDetails?.items || [], // Pass all cart items
+          shipping: shippingDetails,
+          payment: paymentDetails,
+          customerId: sanityUserId, // Use Sanity user ID
+          sellerIds: allSellerIds, // Pass all unique seller IDs
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create order");
+      }
+
+      const createdOrder = await response.json();
+      console.log("Order created successfully:", createdOrder);
+
+      // Create the shipping label for this seller's order
+      const label = await createShippingLabel(selectedShippingRate || "");
+      if (!label) {
+        throw new Error("Failed to create shipping label");
+      }
+
+      console.log("Shipping label created:", label?.labelUrl);
+
+      // Extract tracking number and order ID
+      const trackingNumber = label?.trackingNumber || "N/A";
+      const orderId = createdOrder?.id || "N/A";
+
+      setTrackingId(trackingNumber);
+      setOrderId(orderId);
+
+      setIsProcessing(false);
       // Clear the cart and move to confirmation
       dispatch({ type: "CLEAR_CART" });
       setCurrentStep("confirmation");
@@ -411,10 +411,10 @@ const totalQuantity = calculateTotalQuantity();
       case "confirmation":
         return (
           <ConfirmationPage
-          orderDetails={orderDetails}
-          orderId={orderId}
-          trackingId={trackingId}
-          shippingCost={shippingCost}
+            orderDetails={orderDetails}
+            orderId={orderId}
+            trackingId={trackingId}
+            shippingCost={shippingCost}
           />
         );
       default:

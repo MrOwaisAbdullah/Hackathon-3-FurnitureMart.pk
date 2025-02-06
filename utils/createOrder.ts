@@ -11,7 +11,7 @@ export const createOrder = async (orderDetails: {
     transactionId?: string;
   };
   customerId: string; // This should be the Sanity user ID
-  sellerId: string;
+  sellerIds: string[]; // Array of seller IDs
 }): Promise<{ id: string }> => {
   try {
     // Validate customer ID (Sanity user ID)
@@ -19,7 +19,6 @@ export const createOrder = async (orderDetails: {
       `*[_type == "user" && _id == $customerId][0]`,
       { customerId: orderDetails.customerId }
     );
-
     if (!customerExists) {
       throw new Error(`Customer with ID "${orderDetails.customerId}" does not exist in Sanity.`);
     }
@@ -41,10 +40,11 @@ export const createOrder = async (orderDetails: {
         _type: "reference",
         _ref: orderDetails.customerId, // Use Sanity user ID
       },
-      seller: {
+      sellers: orderDetails.sellerIds.map((sellerId) => ({
+        _key: uuidv4(), // Add a unique key for each seller
         _type: "reference",
-        _ref: orderDetails.sellerId, // Reference to the seller
-      },
+        _ref: sellerId, // Reference to each seller
+      })),
       products: orderDetails.cart.map((item) => ({
         _key: uuidv4(), // Add a unique key for each product
         product: {
@@ -74,9 +74,7 @@ export const createOrder = async (orderDetails: {
 
     // Save the order in Sanity
     const response = await client.create(orderDocument);
-
     console.log("Order created successfully:", response);
-
     return { id: response._id }; // Return the Sanity document ID
   } catch (error) {
     console.error("Error creating order:", error);

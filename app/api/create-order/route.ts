@@ -14,7 +14,7 @@ interface OrderRequestBody {
   shipping: ShippingDetails;
   payment: PaymentDetails;
   customerId: string;
-  sellerId: string;
+  sellerIds: string[]; 
 }
 
 export async function POST(request: Request) {
@@ -26,10 +26,27 @@ export async function POST(request: Request) {
       `*[_type == "user" && _id == $customerId][0]`,
       { customerId: orderDetails.customerId }
     );
-
     if (!customerExists) {
       return NextResponse.json(
         { error: "Customer does not exist in Sanity." },
+        { status: 400 }
+      );
+    }
+
+    // Validate sellerIds (ensure all sellers exist in Sanity)
+    const sellersExist = await Promise.all(
+      orderDetails.sellerIds.map(async (sellerId) => {
+        const seller = await client.fetch(
+          `*[_type == "seller" && _id == $sellerId][0]`,
+          { sellerId }
+        );
+        return !!seller;
+      })
+    );
+
+    if (!sellersExist.every(Boolean)) {
+      return NextResponse.json(
+        { error: "One or more sellers do not exist in Sanity." },
         { status: 400 }
       );
     }

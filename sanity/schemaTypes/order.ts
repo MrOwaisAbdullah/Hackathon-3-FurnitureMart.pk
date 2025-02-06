@@ -20,11 +20,16 @@ export const orderSchema = defineType({
       description: "The customer who placed the order.",
     }),
     defineField({
-      name: "seller",
-      title: "Seller",
-      type: "reference",
-      to: [{ type: "seller" }], // Reference to the seller schema
-      description: "The seller associated with this order.",
+      name: "sellers",
+      title: "Sellers",
+      type: "array", 
+      of: [
+        {
+          type: "reference",
+          to: [{ type: "seller" }], // Reference to the seller schema
+        },
+      ],
+      description: "The sellers associated with this order.",
     }),
     defineField({
       name: "products",
