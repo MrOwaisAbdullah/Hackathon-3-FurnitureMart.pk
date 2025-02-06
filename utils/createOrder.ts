@@ -2,6 +2,11 @@ import { client } from "@/sanity/lib/client";
 import { v4 as uuidv4 } from "uuid";
 import { Product, ShippingDetails } from "@/typing";
 
+// Helper function to generate a short unique ID
+const generateOrderId = (): string => {
+  return `order-${uuidv4().slice(0, 8)}`; // Use only the first 8 characters of the UUID
+};
+
 export const createOrder = async (orderDetails: {
   cart: Product[];
   shipping: ShippingDetails;
@@ -10,7 +15,7 @@ export const createOrder = async (orderDetails: {
     amountPaid: number;
     transactionId?: string;
   };
-  customerId: string; // This should be the Sanity user ID
+  customerId: string; 
   sellerIds: string[]; // Array of seller IDs
 }): Promise<{ id: string }> => {
   try {
@@ -24,7 +29,7 @@ export const createOrder = async (orderDetails: {
     }
 
     // Generate a unique order ID
-    const orderId = uuidv4();
+    const orderId = generateOrderId();
 
     // Calculate the total amount of the order
     const total = orderDetails.cart.reduce(
@@ -75,7 +80,7 @@ export const createOrder = async (orderDetails: {
     // Save the order in Sanity
     const response = await client.create(orderDocument);
     console.log("Order created successfully:", response);
-    return { id: response._id }; // Return the Sanity document ID
+    return { id: response.orderId }; // Return the Sanity document ID
   } catch (error) {
     console.error("Error creating order:", error);
     throw error;
