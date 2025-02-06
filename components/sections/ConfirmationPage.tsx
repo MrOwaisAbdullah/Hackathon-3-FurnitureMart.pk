@@ -48,12 +48,12 @@ const ConfirmationPage = ({
         >
           Continue Shopping
         </Link>
-        <Link
+        {/* <Link
           href={`/track/${trackingId}`}
           className="w-full bg-primary text-white py-3 rounded hover:bg-accent transition-colors"
         >
           Track Your Order
-        </Link>
+        </Link> */}
       </div>
     </div>
   );
