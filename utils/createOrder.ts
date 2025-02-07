@@ -4,7 +4,10 @@ import { Product, ShippingDetails } from "@/typing";
 
 // Helper function to generate a short unique ID
 const generateOrderId = (): string => {
-  return `order-${uuidv4().slice(0, 8)}`; // Use only the first 8 characters of the UUID
+  const timestamp = Date.now().toString(36); // Compact timestamp
+  const uuid = uuidv4().slice(0, 4);
+  const uniquId = `${uuid}${timestamp}`.slice(0, 8).toUpperCase(); // Combine timestamp and random string
+  return `order-${uniquId}`; // Combine timestamp and random string
 };
 
 export const createOrder = async (orderDetails: {

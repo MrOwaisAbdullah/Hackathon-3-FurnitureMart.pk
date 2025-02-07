@@ -62,7 +62,11 @@ const Checkout = () => {
   }, [selectedShippingRate, shippingRates]);
 
   // Calculate total amount (product total + shipping cost)
-  const totalAmount = orderDetails ? orderDetails.total + shippingCost : 0;
+  const totalAmount = orderDetails
+  ? shippingCost
+    ? orderDetails.total + shippingCost
+    : orderDetails.total
+  : 0;
 
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -171,9 +175,6 @@ const Checkout = () => {
 
       // Extract all unique seller IDs
       const allSellerIds = Object.keys(groupedItems);
-
-      // Process the entire order for all sellers
-      const totalAmount = orderDetails?.total || 0;
 
       // Sync user data with Clerk
       const userSynced = await syncUser(shippingDetails);
