@@ -40,6 +40,6 @@ export async function getSellers(): Promise<Seller[]> {
     _id,
     shopName,
   }`;
-  const result = await client.fetch(query);
+  const result = await client.fetch(query, {}, { cache: 'no-store' }); // Disable caching
   return result;
 }

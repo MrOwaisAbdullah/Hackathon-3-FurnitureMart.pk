@@ -111,6 +111,10 @@ const ProductsClientWrapper: React.FC<ProductsClientWrapperProps> = ({
     setCurrentPage(page);
   }, [searchParams]);
 
+  useEffect(() => {
+    console.log("Sellers fetched:", sellers);
+  }, [sellers]);
+
   // Calculate pagination
   const totalPages = Math.ceil(filteredProducts.length / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
