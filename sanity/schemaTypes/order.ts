@@ -89,6 +89,7 @@ export const orderSchema = defineType({
           },
           validation: (Rule) => Rule.required(),
           description: "Payment method used by the customer.",
+          
         }),
         defineField({
           name: "transactionId",

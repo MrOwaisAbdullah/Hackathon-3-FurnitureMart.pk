@@ -9,26 +9,35 @@ export const sellerSchema = {
     { name: "email", type: "string", title: "Email" },
     { name: "phone", type: "string", title: "Phone" },
     { name: "address", type: "text", title: "Address" },
-    { 
-      name: "businessType", 
-      type: "string", 
+    {
+      name: "businessType",
+      type: "string",
       options: {
         list: [
-          {title: "Showroom", value: "showroom"},
-          {title: "Workshop", value: "workshop"},
-          {title: "Both", value: "both"}
-        ]
-      }
+          { title: "Showroom", value: "showroom" },
+          { title: "Workshop", value: "workshop" },
+          { title: "Both", value: "both" },
+        ],
+      },
     },
-    { name: "isApproved", type: "boolean", initialValue: true, title: "Approved" },
+    {
+      name: "isApproved",
+      type: "boolean",
+      initialValue: false,
+      title: "Approved",
+    },
     { name: "logo", type: "image", title: "Shop Logo" },
-    { name: "role", type: "string", title: "Role", initialValue: "seller",
+    {
+      name: "role",
+      type: "string",
+      title: "Role",
+      initialValue: "seller",
       options: {
         list: [
-          {title: "Seller", value: "seller"},
-          {title: "Admin", value: "admin"},
-        ]
-      }
-    }
-  ]
+          { title: "Seller", value: "seller" },
+          { title: "Admin", value: "admin" },
+        ],
+      },
+    },
+  ],
 };
