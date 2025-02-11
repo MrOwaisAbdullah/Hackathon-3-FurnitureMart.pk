@@ -14,6 +14,7 @@ export default function Home() {
       <Categories />
       <Gallery />
       <Products />
+      <div> </div>
     </div>
   );
 }

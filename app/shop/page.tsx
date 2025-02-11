@@ -36,7 +36,7 @@ const shop = async () => {
       <div className="mx-3">
         <Suspense
           fallback={
-            <div className="flex justify-center items-center font-medium gap-5">
+            <div className="flex flex-col justify-center items-center font-medium gap-5">
               <Loader />
               Loading products...
             </div>
