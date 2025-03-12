@@ -6,12 +6,17 @@ import { CartProvider } from "./context/CartContext";
 import { NotificationsProvider } from "./context/NotificationContext";
 import { ToastContainer } from "@/components/ui/Toast";
 import { WishlistProvider } from "./context/WishlistContext";
-import { ClerkProvider } from "@clerk/nextjs";
+import dynamic from "next/dynamic";
 
 export const metadata: Metadata = {
   title: "Comforty Furniture Shop",
   description: "Created By Owais Abdullah",
 };
+
+const ClerkProvider = dynamic(
+  () => import("@/components/sections/ClerkWrapper"),
+  { ssr: false }
+);
 
 export default function RootLayout({
   children,
@@ -20,6 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+        <head>
+        <link rel="preload" href="/globals.css" as="style" />
+      </head>
       <body>
       <ClerkProvider
       afterSignUpUrl="/checkout" // Redirect to checkout after signup

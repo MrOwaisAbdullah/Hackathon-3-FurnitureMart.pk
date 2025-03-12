@@ -26,7 +26,7 @@ const Hero = () => {
           </div>
         </div>
         <div className="lg:w-2/5 md:w-1/2 w-5/6">
-          <Image className="" src={hero} priority alt="Hero Image" height={600} width={900} />
+          <Image className="" src={hero} priority alt="Hero Image" height={600} width={900} sizes="(max-width: 768px) 100vw, 50vw"/>
         </div>
       </div>
     </section>
