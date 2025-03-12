@@ -14,25 +14,25 @@ const Clients = () => {
   <div className=" pt-24">
     <div className="flex flex-wrap m-auto px-5 xl:px-0 justify-center  xl:flex-nowrap text-center gap-20 items-center">
       <div className="max-w-20 xl:max-w-36">
-        <Image src={client1} alt='Clients'/>
+        <Image src={client1} alt='Clients' width={150} height={80} sizes="(max-width: 768px) 50vw, 20vw"/>
       </div>
       <div className="max-w-20 xl:max-w-36">
-        <Image src={client2} alt='Clients'/>
+        <Image src={client2} alt='Clients' width={150} height={80} sizes="(max-width: 768px) 50vw, 20vw"/>
       </div>
       <div className="max-w-20 xl:max-w-36 xl:w-28 xl:min-w-28">
-        <Image src={client3} alt='Clients'/>
+        <Image src={client3} alt='Clients' width={150} height={80} sizes="(max-width: 768px) 50vw, 20vw"/>
       </div>
       <div className="max-w-20 xl:max-w-24 xl:w-24 xl:min-w-24">
-        <Image src={client4} alt='Clients'/>
+        <Image src={client4} alt='Clients' width={150} height={80} sizes="(max-width: 768px) 50vw, 20vw"/>
       </div>
       <div className="max-w-20 xl:max-w-40 xl:w-28 xl:min-w-28 hidden lg:block">
-        <Image src={client5} alt='Clients'/>
+        <Image src={client5} alt='Clients' width={150} height={80} sizes="(max-width: 768px) 50vw, 20vw"/>
       </div>
       <div className="max-w-20 xl:max-w-36 hidden lg:block">
-        <Image src={client6} alt='Clients'/>
+        <Image src={client6} alt='Clients' width={150} height={80} sizes="(max-width: 768px) 50vw, 20vw"/>
       </div>
       <div className="max-w-20 xl:max-w-28 xl:w-28 xl:min-w-28 hidden lg:block">
-        <Image src={client7} alt='Clients'/>
+        <Image src={client7} alt='Clients' width={150} height={80} sizes="(max-width: 768px) 50vw, 20vw"/>
       </div>
       
 
